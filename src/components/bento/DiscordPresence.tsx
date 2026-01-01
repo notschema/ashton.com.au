@@ -63,6 +63,16 @@ export default function DiscordPresence() {
         const json = await res.json();
         if (mounted && json.success) {
           setPresence(json.data);
+          
+          // Broadcast to other components (like Haunt)
+          const activity = json.data.activities?.find(a => a.type === 0);
+          window.dispatchEvent(new CustomEvent('discord-state', { 
+            detail: { 
+              status: json.data.discord_status,
+              isPlaying: !!activity,
+              activity: activity?.name || null
+            } 
+          }));
         }
       } catch (e) {
         console.error('Lanyard fetch failed:', e);

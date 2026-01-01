@@ -85,6 +85,12 @@ export default function SpotifyPresence() {
           setTrack(json.track);
           saveCache(json.track);
           setError(false);
+          
+          // Broadcast to other components (like Haunt)
+          const isPlaying = json.track['@attr']?.nowplaying === 'true';
+          window.dispatchEvent(new CustomEvent('spotify-state', { 
+            detail: { isPlaying, track: json.track.name } 
+          }));
         }
       } catch (e) {
         console.error('Last.fm fetch failed:', e);
@@ -144,7 +150,10 @@ export default function SpotifyPresence() {
   const albumArt = image?.[3]?.['#text'] || image?.[2]?.['#text'];
 
   return (
-    <div className="group relative h-full overflow-hidden rounded-xl bg-zinc-900/80 backdrop-blur border border-white/5">
+    <div className={cn(
+      "group relative h-full overflow-hidden rounded-xl bg-zinc-900/80 backdrop-blur border border-white/5 transition-all duration-500",
+      !isNowPlaying && "grayscale opacity-60 hover:grayscale-0 hover:opacity-100"
+    )}>
       {/* Background blur */}
       {albumArt && (
         <div

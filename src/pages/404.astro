@@ -1,0 +1,60 @@
+---
+/**
+ * Custom 404 Error Page
+ * Minimal, edgy aesthetic matching the site vibe
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 | Page Not Found">
+  <div class="min-h-screen flex items-center justify-center px-4">
+    <div class="max-w-2xl w-full text-center">
+      {/* Glitch effect on 404 */}
+      <div class="relative mb-8">
+        <h1 class="text-9xl font-bold text-white/10 select-none">404</h1>
+        <h1 
+          class="absolute inset-0 text-9xl font-bold text-blue-400 animate-pulse"
+          style="text-shadow: 0 0 20px rgba(59, 130, 246, 0.5)"
+        >
+          404
+        </h1>
+      </div>
+
+      {/* Message */}
+      <div class="space-y-4 mb-8">
+        <h2 class="text-2xl font-bold text-white">
+          page.exe not found
+        </h2>
+        <p class="text-zinc-400 text-sm">
+          you've wandered into the void. this route doesn't exist—yet.
+        </p>
+      </div>
+
+      {/* Actions */}
+      <div class="flex gap-4 justify-center">
+        <a
+          href="/"
+          class="px-6 py-3 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors text-sm font-medium"
+        >
+          ← back to home
+        </a>
+        <a
+          href="/work"
+          class="px-6 py-3 rounded-lg bg-white/5 border border-white/10 text-zinc-400 hover:bg-white/10 transition-colors text-sm font-medium"
+        >
+          view projects
+        </a>
+      </div>
+
+      {/* ASCII art for fun */}
+      <pre class="mt-12 text-zinc-700 text-xs font-mono">
+{`    ___
+   /   \\
+  | o_o |
+   \\_^_/
+    |||
+   /   \\`}
+      </pre>
+    </div>
+  </div>
+</BaseLayout>

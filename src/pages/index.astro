@@ -1,16 +1,16 @@
 ---
 /**
- * HomePage - Main landing page with Bento Grid layout
+ * HomePage - Clean Bento Grid layout
+ * Removed TechStack, kept essential cards
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TiltCard from '../components/ui/TiltCard.jsx';
 import HeroCard from '../components/bento/HeroCard.jsx';
 import DiscordPresence from '../components/bento/DiscordPresence';
 import SpotifyPresence from '../components/bento/SpotifyPresence';
-import SydneyTime from '../components/bento/SydneyTime';
-import TechStack from '../components/bento/TechStack.jsx';
-import Socials from '../components/bento/Socials.jsx';
-import GitHubGraph from '../components/bento/GitHubGraph.jsx';
+import GitHubProfile from '../components/bento/GitHubProfile';
+import XCard from '../components/bento/XCard';
+import Fishtank from '../components/bento/Fishtank';
 ---
 
 <BaseLayout>
@@ -29,24 +29,17 @@ import GitHubGraph from '../components/bento/GitHubGraph.jsx';
         <SpotifyPresence client:load />
       </TiltCard>
 
-      <!-- Row 3: Tech Stack (2x1) + Socials (1x1) + Time (1x1) -->
+      <!-- Row 3: GitHub (2x1) + X (1x1) + Fishtank (1x1) -->
       <TiltCard client:load className="span-2x1">
-        <TechStack client:load />
+        <GitHubProfile client:load />
       </TiltCard>
 
       <TiltCard client:load className="span-1x1">
-        <Socials client:load />
+        <XCard client:load />
       </TiltCard>
 
       <TiltCard client:load className="span-1x1">
-        <div class="glass-card h-full flex items-center justify-center p-6 text-center">
-          <SydneyTime client:load />
-        </div>
-      </TiltCard>
-
-      <!-- Row 4: GitHub Graph - Full width -->
-      <TiltCard client:load className="span-4x1">
-        <GitHubGraph client:load username="notschema" />
+        <Fishtank client:load />
       </TiltCard>
     </div>
   </div>

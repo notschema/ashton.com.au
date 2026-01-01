@@ -1,50 +1,99 @@
 ---
 /**
- * About Page
+ * About Page - Who I Am
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../consts';
 ---
 
-<BaseLayout title={`About | ${SITE.title}`} description="Learn more about Ashton - Systems Engineer & Whitehat Pentester.">
-  <div class="mx-auto max-w-4xl px-4 py-16">
-    <article class="prose mx-auto">
-      <h1>About Me</h1>
-      
-      <p class="lead text-lg text-muted-foreground">
-        I'm a Systems Engineer and Whitehat Pentester based in Australia. 
-        I specialize in building secure, scalable infrastructure and finding 
-        vulnerabilities before the bad actors do.
-      </p>
+<BaseLayout title={`About | ${SITE.title}`} description="Ashton - Systems Engineer & Whitehat Pentester from Sydney.">
+  <div class="mx-auto max-w-3xl px-4 py-16">
+    <article class="space-y-8">
+      {/* Header */}
+      <div class="space-y-3">
+        <h1 class="text-4xl font-bold text-white">about</h1>
+        <p class="text-zinc-500 text-sm">
+          who i am, what i do, why i do it
+        </p>
+      </div>
 
-      <h2>What I Do</h2>
-      <p>
-        My work spans across infrastructure engineering, security research, and 
-        automation. I enjoy the challenge of building systems that are both 
-        performant and secure.
-      </p>
+      {/* Main Content */}
+      <div class="space-y-6 text-zinc-300 leading-relaxed">
+        <p>
+          i'm ashton, a <span class="text-blue-400 font-medium">systems engineer</span> and 
+          <span class="text-blue-400 font-medium">whitehat pentester</span> based in sydney.
+        </p>
 
-      <ul>
-        <li><strong>Infrastructure</strong> - Designing and maintaining scalable cloud infrastructure</li>
-        <li><strong>Security</strong> - Penetration testing and vulnerability assessment</li>
-        <li><strong>Automation</strong> - Building tools to streamline workflows</li>
-        <li><strong>Open Source</strong> - Contributing to security and DevOps projects</li>
-      </ul>
+        <p>
+          by day, i build and secure infrastructure. by night, i break into systems 
+          (with permission) to find vulnerabilities before the bad guys do. the rest of 
+          the time? probably playing CTFs or tinkering with homelab setups.
+        </p>
 
-      <h2>Tech Stack</h2>
-      <p>
-        I work with a variety of technologies including Python, Go, Docker, 
-        Kubernetes, Terraform, and various cloud platforms. On the security 
-        side, I'm proficient with tools like Burp Suite, Nmap, and custom 
-        scripting for CTFs.
-      </p>
+        <h2 class="text-xl font-semibold text-white pt-4">what i do</h2>
+        
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="rounded-lg bg-zinc-900/50 border border-white/5 p-4">
+            <h3 class="text-white font-medium mb-2">infrastructure</h3>
+            <p class="text-sm text-zinc-400">
+              designing scalable cloud architecture, automation pipelines, and 
+              containerized deployments
+            </p>
+          </div>
 
-      <h2>Get in Touch</h2>
-      <p>
-        Interested in working together? Feel free to reach out via 
-        <a href="mailto:hello@ashton.com.au">email</a> or connect with me on 
-        <a href="https://github.com/notschema" target="_blank" rel="noopener noreferrer">GitHub</a>.
-      </p>
+          <div class="rounded-lg bg-zinc-900/50 border border-white/5 p-4">
+            <h3 class="text-white font-medium mb-2">security</h3>
+            <p class="text-sm text-zinc-400">
+              penetration testing, vulnerability research, red team operations, 
+              and CTF competitions
+            </p>
+          </div>
+
+          <div class="rounded-lg bg-zinc-900/50 border border-white/5 p-4">
+            <h3 class="text-white font-medium mb-2">automation</h3>
+            <p class="text-sm text-zinc-400">
+              building tools and scripts to streamline workflows, from CI/CD 
+              to custom security tooling
+            </p>
+          </div>
+
+          <div class="rounded-lg bg-zinc-900/50 border border-white/5 p-4">
+            <h3 class="text-white font-medium mb-2">open source</h3>
+            <p class="text-sm text-zinc-400">
+              contributing to security projects and sharing knowledge with the 
+              community
+            </p>
+          </div>
+        </div>
+
+        <h2 class="text-xl font-semibold text-white pt-4">stack</h2>
+        
+        <p class="text-sm text-zinc-400">
+          python, go, docker, kubernetes, terraform, aws/azure, burp suite, metasploit, 
+          custom exploit dev, reverse engineering
+        </p>
+
+        <h2 class="text-xl font-semibold text-white pt-4">contact</h2>
+        
+        <p>
+          want to collaborate or just chat about security? hit me up at{' '}
+          <a 
+            href="mailto:hello@ashton.com.au" 
+            class="text-blue-400 hover:underline"
+          >
+            hello@ashton.com.au
+          </a>
+          {' '}or find me on{' '}
+          <a 
+            href="https://github.com/notschema" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="text-blue-400 hover:underline"
+          >
+            github
+          </a>.
+        </p>
+      </div>
     </article>
   </div>
 </BaseLayout>

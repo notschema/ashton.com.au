@@ -1,94 +1,92 @@
-import { cn } from '../../lib/utils';
-import { Avatar, StatusIndicator } from '../ui/Card';
-import { GitHubIcon, MailIcon, LinkedInIcon, DocumentIcon, ChevronRightIcon, SocialIcons } from '../ui/Icons';
-
 /**
- * HeroCard - Main profile card for the Bento grid
- * Displays name, title, avatar, social links, and resume button
+ * HeroCard - Personal intro with location and time
+ * Fun and edgy vibe, not geeky
  */
 
-const socialLinks = [
-    { href: 'https://github.com/notschema', label: 'GitHub', icon: GitHubIcon },
-    { href: 'mailto:hello@ashton.com.au', label: 'Email', icon: MailIcon },
-    { href: 'https://linkedin.com/in/ashton', label: 'LinkedIn', icon: LinkedInIcon },
-].filter(Boolean);
+import { useState, useEffect } from 'react';
+import { MapPin } from 'lucide-react';
 
-export default function HeroCard({
-    name = 'Ashton',
-    title = 'Sys Engineer & Whitehat Pentester',
-    bio = null,
-    avatar = null,
-    status = 'available',
-    resumeUrl = '/resume.pdf',
-}) {
+const TIMEZONE = 'Australia/Sydney';
+
+// Get contextual message based on hour
+function getTimeContext(hour) {
+    if (hour >= 0 && hour < 6) return "night owl mode 🦉";
+    if (hour >= 6 && hour < 9) return "caffeinating ☕";
+    if (hour >= 9 && hour < 12) return "in the zone 💀";
+    if (hour >= 12 && hour < 14) return "touching grass 🌱";
+    if (hour >= 14 && hour < 17) return "breaking things 🔥";
+    if (hour >= 17 && hour < 21) return "off the clock ✌️";
+    return "probably hacking something 👾";
+}
+
+export default function HeroCard() {
+    const [time, setTime] = useState(null);
+
+    useEffect(() => {
+        const update = () => setTime(new Date());
+        update();
+        const interval = setInterval(update, 60000);
+        return () => clearInterval(interval);
+    }, []);
+
+    let timeDisplay = '...';
+    let context = '';
+
+    if (time) {
+        timeDisplay = time.toLocaleTimeString('en-AU', {
+            timeZone: TIMEZONE,
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+        }).toLowerCase();
+
+        const hour = parseInt(
+            time.toLocaleTimeString('en-AU', {
+                timeZone: TIMEZONE,
+                hour: 'numeric',
+                hour12: false,
+            })
+        );
+        context = getTimeContext(hour);
+    }
+
     return (
-        <div
-            className={cn(
-                'glass-card h-full overflow-hidden p-6 md:p-8',
-                'transition-colors duration-300 ease-in-out',
-                'has-[a:hover]:bg-white/[0.08]'
-            )}
-        >
-            {/* Background gradient accent */}
-            <div
-                className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-3xl"
-                aria-hidden="true"
-            />
+        <div className="relative h-full overflow-hidden rounded-xl bg-zinc-900/80 backdrop-blur border border-white/5 p-6 flex flex-col">
+            {/* Gradient accent */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-blue-500/10 to-transparent rounded-bl-full" />
 
-            <div className="relative z-10 flex h-full flex-col">
-                {/* Profile Section */}
-                <div className="flex flex-wrap gap-4 md:gap-6">
-                    <Avatar
-                        src={avatar}
-                        alt={`Avatar of ${name}`}
-                        fallback={name[0]}
-                        className={cn(
-                            'h-20 w-20 rounded-2xl md:h-24 md:w-24',
-                            'ring-2 ring-transparent transition-all duration-300',
-                            'hover:ring-blue-500/50 hover:cursor-pointer'
-                        )}
-                    />
-
-                    <div className="flex grow flex-col justify-between gap-y-3">
-                        <div>
-                            <div className="flex flex-wrap items-center gap-x-3">
-                                <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-                                    {name}
-                                </h1>
-                            </div>
-                            <p className="mt-1 text-base text-gray-400 md:text-lg">
-                                {title}
-                            </p>
-                            {bio && (
-                                <p className="mt-2 text-sm text-gray-500">
-                                    {bio}
-                                </p>
-                            )}
-                        </div>
-                        <SocialIcons links={socialLinks} />
-                    </div>
+            {/* Content */}
+            <div className="relative z-10 flex-1 flex flex-col">
+                {/* Greeting */}
+                <div className="mb-4">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                        yo, i'm <span className="text-blue-400">ashton</span>
+                    </h1>
+                    <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
+                        i break into systems for a living. pentester by day,
+                        infrastructure nerd by night. sydney-based.
+                    </p>
                 </div>
 
-                {/* Bottom Section */}
-                <div className="mt-auto flex flex-wrap items-center justify-between gap-4 pt-6">
-                    <StatusIndicator status={status} />
+                {/* Spiel */}
+                <p className="text-zinc-500 text-sm mb-4">
+                    if it's connected, i'll find a way in. red team ops, secure infra,
+                    and the occasional CTF when i'm bored.
+                </p>
 
-                    <a
-                        href={resumeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={cn(
-                            'group inline-flex items-center gap-2',
-                            'rounded-xl border border-white/10 bg-white/10 px-5 py-2.5',
-                            'text-sm font-medium text-white',
-                            'transition-all duration-300',
-                            'hover:border-white/20 hover:bg-white/15'
-                        )}
-                    >
-                        <DocumentIcon className="h-4 w-4" />
-                        Resume
-                        <ChevronRightIcon className="h-4 w-4 opacity-50 transition-opacity group-hover:opacity-100" />
-                    </a>
+                {/* Location + Time */}
+                <div className="mt-auto pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-2 text-sm">
+                        <MapPin className="h-4 w-4 text-zinc-500" />
+                        <span className="text-zinc-400">sydney</span>
+                        <span className="text-zinc-600">•</span>
+                        <span className="text-zinc-400">
+                            <span className="text-blue-400 font-medium">{timeDisplay}</span> local
+                        </span>
+                    </div>
+                    <p className="text-xs text-zinc-500 mt-1 ml-6">
+                        {context}
+                    </p>
                 </div>
             </div>
         </div>
