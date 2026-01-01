@@ -1,0 +1,157 @@
+/* ==========================================================================
+   Typography Styles for Prose Content
+   ========================================================================== */
+
+.prose {
+    --prose-body: var(--foreground);
+    --prose-headings: var(--foreground);
+    --prose-lead: var(--muted-foreground);
+    --prose-links: var(--primary);
+    --prose-bold: var(--foreground);
+    --prose-counters: var(--muted-foreground);
+    --prose-bullets: var(--border);
+    --prose-hr: var(--border);
+    --prose-quotes: var(--foreground);
+    --prose-quote-borders: var(--border);
+    --prose-captions: var(--muted-foreground);
+    --prose-code: var(--foreground);
+    --prose-pre-code: var(--foreground);
+    --prose-pre-bg: var(--muted);
+    --prose-th-borders: var(--border);
+    --prose-td-borders: var(--border);
+}
+
+.prose {
+    color: var(--prose-body);
+    max-width: 65ch;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+    color: var(--prose-headings);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.prose h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+.prose h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.prose h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.prose p {
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.prose a {
+    color: var(--prose-links);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+}
+
+.prose a:hover {
+    color: var(--foreground);
+}
+
+.prose strong {
+    color: var(--prose-bold);
+    font-weight: 600;
+}
+
+.prose code {
+    color: var(--prose-code);
+    font-size: 0.875em;
+    font-weight: 500;
+    background: var(--muted);
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+}
+
+.prose pre {
+    color: var(--prose-pre-code);
+    background: var(--prose-pre-bg);
+    overflow-x: auto;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+}
+
+.prose pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 0.875rem;
+}
+
+.prose blockquote {
+    font-style: italic;
+    border-left: 4px solid var(--prose-quote-borders);
+    padding-left: 1rem;
+    color: var(--prose-quotes);
+}
+
+.prose ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+}
+
+.prose ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+}
+
+.prose li {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.prose hr {
+    border-color: var(--prose-hr);
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.prose img {
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.prose th,
+.prose td {
+    border: 1px solid var(--prose-td-borders);
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+.prose th {
+    background: var(--muted);
+    font-weight: 600;
+}

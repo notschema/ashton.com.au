@@ -1,0 +1,50 @@
+---
+/**
+ * About Page
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+---
+
+<BaseLayout title={`About | ${SITE.title}`} description="Learn more about Ashton - Systems Engineer & Whitehat Pentester.">
+  <div class="mx-auto max-w-4xl px-4 py-16">
+    <article class="prose mx-auto">
+      <h1>About Me</h1>
+      
+      <p class="lead text-lg text-muted-foreground">
+        I'm a Systems Engineer and Whitehat Pentester based in Australia. 
+        I specialize in building secure, scalable infrastructure and finding 
+        vulnerabilities before the bad actors do.
+      </p>
+
+      <h2>What I Do</h2>
+      <p>
+        My work spans across infrastructure engineering, security research, and 
+        automation. I enjoy the challenge of building systems that are both 
+        performant and secure.
+      </p>
+
+      <ul>
+        <li><strong>Infrastructure</strong> - Designing and maintaining scalable cloud infrastructure</li>
+        <li><strong>Security</strong> - Penetration testing and vulnerability assessment</li>
+        <li><strong>Automation</strong> - Building tools to streamline workflows</li>
+        <li><strong>Open Source</strong> - Contributing to security and DevOps projects</li>
+      </ul>
+
+      <h2>Tech Stack</h2>
+      <p>
+        I work with a variety of technologies including Python, Go, Docker, 
+        Kubernetes, Terraform, and various cloud platforms. On the security 
+        side, I'm proficient with tools like Burp Suite, Nmap, and custom 
+        scripting for CTFs.
+      </p>
+
+      <h2>Get in Touch</h2>
+      <p>
+        Interested in working together? Feel free to reach out via 
+        <a href="mailto:hello@ashton.com.au">email</a> or connect with me on 
+        <a href="https://github.com/notschema" target="_blank" rel="noopener noreferrer">GitHub</a>.
+      </p>
+    </article>
+  </div>
+</BaseLayout>

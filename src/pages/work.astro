@@ -1,0 +1,80 @@
+---
+/**
+ * Work/Projects Page
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('projects');
+const sortedProjects = projects.sort((a, b) => 
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<BaseLayout title={`Work | ${SITE.title}`} description="Projects and work by Ashton.">
+  <div class="mx-auto max-w-4xl px-4 py-16">
+    <h1 class="mb-4 text-4xl font-bold">Work</h1>
+    <p class="mb-12 text-lg text-muted-foreground">
+      A collection of projects I've worked on.
+    </p>
+
+    <div class="grid gap-6">
+      {sortedProjects.map((project) => (
+        <article 
+          class="group rounded-xl border border-border bg-muted/30 p-6 transition-all hover:border-primary/50 hover:bg-muted/50"
+        >
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div class="flex-1">
+              <h2 class="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
+                {project.data.title}
+              </h2>
+              <p class="mt-2 text-muted-foreground">
+                {project.data.description}
+              </p>
+              
+              {project.data.tags && (
+                <div class="mt-4 flex flex-wrap gap-2">
+                  {project.data.tags.map((tag: string) => (
+                    <span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div class="flex gap-3">
+              {project.data.github && (
+                <a 
+                  href={project.data.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  GitHub
+                </a>
+              )}
+              {project.data.url && (
+                <a 
+                  href={project.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  View
+                </a>
+              )}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {sortedProjects.length === 0 && (
+      <p class="text-center text-muted-foreground">
+        No projects yet. Check back soon!
+      </p>
+    )}
+  </div>
+</BaseLayout>
