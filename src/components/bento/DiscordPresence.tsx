@@ -141,8 +141,13 @@ export default function DiscordPresence() {
     ? `https://cdn.discordapp.com/avatars/${discord_user.id}/${discord_user.avatar}.webp?size=128`
     : null;
 
+  const isOffline = discord_status === 'offline';
+
   return (
-    <div className="group relative h-full overflow-hidden rounded-xl bg-zinc-900/80 backdrop-blur border border-white/5">
+    <div className={cn(
+      "group relative h-full overflow-hidden rounded-xl bg-zinc-900/80 backdrop-blur border border-white/5 transition-all duration-500",
+      isOffline && "grayscale opacity-60 hover:grayscale-0 hover:opacity-100"
+    )}>
       {/* Discord icon */}
       <div className="absolute top-3 right-3 z-10">
         <FaDiscord className="h-10 w-10 text-[#5865F2]" />
