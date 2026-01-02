@@ -1,87 +1,56 @@
-# ⚡ Ashton's Portfolio
+# 🍱 Ashton's Portfolio
 
-A high-performance, bento-grid style personal portfolio built with **Astro**, **React**, and **Tailwind CSS**.
+A personal identity hub built on a reactive **Bento Grid** architecture. Each block is a self-contained, interactive gadget designed to communicate status, interests, and activity in real-time.
 
-![Portfolio Preview](./public/og-image.png)
+![Bento Grid Preview](./public/og-image.png)
 
-## 🛠️ Tech Stack
+## 🏗️ The Grid System
 
-- **Framework:** [Astro v5](https://astro.build) (Hybrid Rendering)
-- **UI Library:** [React](https://react.dev)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com) + [Lucide Icons](https://lucide.dev)
-- **Animations:** CSS transitions & custom keyframes
-- **Deployment:** Vercel / Netlify
+Built with **Astro** for performance and **React** for interactive islands. The layout uses a responsive, asymmetrical grid that adapts to any viewport, preserving the "bento box" aesthetic.
 
-## ✨ Features
+### 🧱 Bento Blocks
 
-### 🍱 Dynamic Bento Grid
+Each component allows specific interaction:
 
-A responsive, asymmetrical grid layout featuring interactive cards:
+| Block              | Features                                                 | Stack                  |
+| :----------------- | :------------------------------------------------------- | :--------------------- |
+| **📺 RetroTV**     | Nostalgic cartoon rotation, CRT effects, channel surfing | `Giphy API` • `Canvas` |
+| **💻 GitHub**      | Live 2026 commits counter, auto-scroll history           | `GitHub Events API`    |
+| **🎵 Spotify**     | Now Playing visualizer, album art glow                   | `Spotify Web API`      |
+| **👾 Discord**     | Real-time status, activity badges, rich presence         | `Lanyard API`          |
+| **🦐 Shrimp Tank** | Virtual pet simulation with physics                      | `React Spring`         |
+| **📍 Time & Loc**  | Sydney timezone synchronized with day/night cycle        | `Intl.DateTimeFormat`  |
 
-- **📺 RetroTV**:
-  - Dynamic nostalgic cartoon GIFs (SpongeBob, Dexter, Courage, etc.)
-  - Random topic selection with day-long caching to respect API limits
-  - CRT scanline aesthetics & channel controls
-- **💻 GitHub Profile**:
-  - Live "Commits in 2026" counter using GitHub Events API
-  - Auto-scrolling recent commits overlay on hover
-  - Repository stats & language breakdown
-- **🎵 Spotify Presence**:
-  - Real-time "Now Playing" display
-  - Album art glow effects & audio visualizer bars
-- **👾 Discord Status**:
-  - Live online/idle/dnd status indicators
-  - Activity rich presence (games, VS Code, etc.)
-- **📍 Local Time**:
-  - Real-time Sydney clock with day/night cycle indicators
+## 🛠️ Stack
 
-### 🎨 Design System
+- **Framework**: [Astro v5](https://astro.build)
+- **Engine**: [React 19](https://react.dev)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com)
+- **Type Safety**: [TypeScript](https://www.typescriptlang.org)
 
-- **Theme**: Dark mode first, monochrome "hacker" aesthetic
-- **Typography**: JetBrains Mono for code/technical feel
-- **Effects**: Glassmorphism, subtle gradients, and smooth hover states
+## 🚀 Deployment
 
-## 🚀 Getting Started
-
-1. **Clone the repository**
+1. **Clone**
 
    ```bash
    git clone https://github.com/notschema/ashton.com.au.git
-   cd ashton.com.au
    ```
 
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment**
-   Create a `.env` file in the root directory:
+2. **Keys**
+   Create `.env`:
 
    ```env
-   PUBLIC_GIPHY_API_KEY=your_giphy_api_key_here
+   PUBLIC_GIPHY_API_KEY=your_key
    ```
 
-4. **Run Development Server**
+3. **Launch**
    ```bash
-   npm run dev
+   npm install && npm run dev
    ```
 
-## 📂 Project Structure
+---
 
-```text
-/
-├── public/             # Static assets
-├── src/
-│   ├── components/     # React & Astro components
-│   │   └── bento/      # Bento grid specific cards
-│   ├── layouts/        # Page layouts (Base, etc.)
-│   ├── pages/          # File-based routing
-│   └── styles/         # Global CSS & Tailwind config
-└── astro.config.mjs    # Astro configuration
-```
-
-## 📄 License
-
-MIT © [Ashton Turner](https://github.com/notschema)
+<div align="center">
+  <p>Designed & Engineered by <a href="https://github.com/notschema">Ashton Turner</a></p>
+  <p><i>System Online • All Systems Normal</i></p>
+</div>
