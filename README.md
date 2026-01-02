@@ -1,43 +1,87 @@
-# Astro Starter Kit: Minimal
+# ⚡ Ashton's Portfolio
 
-```sh
-npm create astro@latest -- --template minimal
-```
+A high-performance, bento-grid style personal portfolio built with **Astro**, **React**, and **Tailwind CSS**.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+![Portfolio Preview](./public/og-image.png)
 
-## 🚀 Project Structure
+## 🛠️ Tech Stack
 
-Inside of your Astro project, you'll see the following folders and files:
+- **Framework:** [Astro v5](https://astro.build) (Hybrid Rendering)
+- **UI Library:** [React](https://react.dev)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com) + [Lucide Icons](https://lucide.dev)
+- **Animations:** CSS transitions & custom keyframes
+- **Deployment:** Vercel / Netlify
+
+## ✨ Features
+
+### 🍱 Dynamic Bento Grid
+
+A responsive, asymmetrical grid layout featuring interactive cards:
+
+- **📺 RetroTV**:
+  - Dynamic nostalgic cartoon GIFs (SpongeBob, Dexter, Courage, etc.)
+  - Random topic selection with day-long caching to respect API limits
+  - CRT scanline aesthetics & channel controls
+- **💻 GitHub Profile**:
+  - Live "Commits in 2026" counter using GitHub Events API
+  - Auto-scrolling recent commits overlay on hover
+  - Repository stats & language breakdown
+- **🎵 Spotify Presence**:
+  - Real-time "Now Playing" display
+  - Album art glow effects & audio visualizer bars
+- **👾 Discord Status**:
+  - Live online/idle/dnd status indicators
+  - Activity rich presence (games, VS Code, etc.)
+- **📍 Local Time**:
+  - Real-time Sydney clock with day/night cycle indicators
+
+### 🎨 Design System
+
+- **Theme**: Dark mode first, monochrome "hacker" aesthetic
+- **Typography**: JetBrains Mono for code/technical feel
+- **Effects**: Glassmorphism, subtle gradients, and smooth hover states
+
+## 🚀 Getting Started
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/notschema/ashton.com.au.git
+   cd ashton.com.au
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment**
+   Create a `.env` file in the root directory:
+
+   ```env
+   PUBLIC_GIPHY_API_KEY=your_giphy_api_key_here
+   ```
+
+4. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+
+## 📂 Project Structure
 
 ```text
 /
-├── public/
+├── public/             # Static assets
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/     # React & Astro components
+│   │   └── bento/      # Bento grid specific cards
+│   ├── layouts/        # Page layouts (Base, etc.)
+│   ├── pages/          # File-based routing
+│   └── styles/         # Global CSS & Tailwind config
+└── astro.config.mjs    # Astro configuration
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 📄 License
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+MIT © [Ashton Turner](https://github.com/notschema)
