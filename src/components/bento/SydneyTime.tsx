@@ -3,7 +3,7 @@
  * Shows current time in Sydney with contextual message
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 const TIMEZONE = 'Australia/Sydney';
 
@@ -58,7 +58,7 @@ export default function SydneyTime() {
         })
     );
 
-    const message = getMessage(hour);
+    const message = useMemo(() => getMessage(hour), [hour]);
 
     return (
         <span className="text-zinc-400 text-sm">

@@ -10,14 +10,12 @@ const TIMEZONE = 'Australia/Sydney';
 
 // Fun bio messages that rotate on refresh
 const BIO_MESSAGES = [
-    "IT consultant specializing in security and infrastructure",
-    "security researcher and penetration tester",
-    "helping businesses secure their digital infrastructure",
-    "IT security consultant based in sydney",
-    "offensive security specialist and systems engineer",
-    "freelance security consultant. breaking things professionally",
-    "penetration testing and security assessments",
-    "cybersecurity consultant. securing systems, breaking assumptions",
+    "systems analyst & security consultant",
+    "specializing in offensive security and red teaming",
+    "building secure, scalable infrastructure",
+    "penetration tester and security researcher",
+    "securing systems, breaking assumptions",
+    "based in sydney, working globally",
 ];
 
 // Get contextual message based on hour

@@ -4,8 +4,8 @@
  */
 
 export const SITE = {
-    title: 'Ashton',
-    description: 'Systems Engineer & Whitehat Pentester. Building secure, scalable infrastructure.',
+    title: 'Ashton | Systems Engineer & Security Consultant',
+    description: 'Professional portfolio of Ashton Turner, a Systems Engineer and Whitehat Pentester based in Sydney. Specializing in secure infrastructure, red team assessments, and software engineering.',
     url: 'https://ashton.com.au',
     author: 'Ashton',
     locale: 'en-AU',

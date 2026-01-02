@@ -143,7 +143,7 @@ function getRandomTopic(): string {
 // To get your own API key: https://developers.giphy.com/dashboard/
 // Note: This is Giphy's public SDK demo key - it works but has rate limits (100 requests/hour)
 // For production, create your own key at https://developers.giphy.com/dashboard/
-const GIPHY_API_KEY = import.meta.env.PUBLIC_GIPHY_API_KEY || 'sXpGFDGZs0Dv1mmNFvYaGUvYwKX0PKL6'; // Giphy SDK demo key
+const GIPHY_API_KEY = import.meta.env.PUBLIC_GIPHY_API_KEY || 'pgfRQgOxW0JnQufadSU727XFSUWP1AND'; // Fallback to provided key
 const GIPHY_LIMIT = 10; // Fetch 10 GIFs to cycle through
 const CHANNEL_DURATION = 20000; // 20 seconds per channel
 const STATIC_DURATION = 500;
