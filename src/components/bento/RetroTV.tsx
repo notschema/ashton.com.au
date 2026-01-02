@@ -159,17 +159,29 @@ export default function RetroTV() {
 
   // Fetch GIFs from Giphy with random nostalgic topic and smart caching
   useEffect(() => {
+    // Client-side only logic to prevent hydration mismatch
+    const today = new Date().toDateString();
+    
+    // Select random topic only on client mount
+    let randomTopic = '';
+    if (currentTopic) {
+        randomTopic = currentTopic;
+    } else {
+        randomTopic = getRandomTopic();
+        setCurrentTopic(randomTopic);
+    }
+    
     async function fetchGiphyContent() {
-      const today = new Date().toDateString();
-      const randomTopic = getRandomTopic();
-      setCurrentTopic(randomTopic);
-      
       // Load cache bucket
       let cache = { date: '', topics: {} as Record<string, Channel[]> };
       try {
         const stored = localStorage.getItem('retrotv_v2_cache');
         if (stored) cache = JSON.parse(stored);
-      } catch (e) { console.warn('Cache parse error'); }
+      } catch (e) {
+         console.warn('Cache parse error'); 
+         // Reset cache on error
+         localStorage.removeItem('retrotv_v2_cache');
+      }
 
       // Reset cache if date changed
       if (cache.date !== today) {
@@ -190,6 +202,12 @@ export default function RetroTV() {
         const response = await fetch(
           `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(randomTopic)}&limit=${GIPHY_LIMIT}&rating=g`
         );
+        
+        if (response.status === 401) {
+            console.error('❌ Giphy API Key Invalid/Missing. Check .env file.');
+            throw new Error('401 Unauthorized');
+        }
+
         const data = await response.json();
         
         if (data.data && data.data.length > 0) {
@@ -227,7 +245,7 @@ export default function RetroTV() {
     }
 
     fetchGiphyContent();
-  }, []);
+  }, [currentTopic]);
 
   const currentChannel = channels[channelIndex];
 
