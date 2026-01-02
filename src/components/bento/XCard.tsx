@@ -1,6 +1,6 @@
 /**
- * XCard - Beautiful X/Twitter profile link card
- * Elegant design with avatar, subtle gradient and premium hover effects
+ * XCard - Minimal X/Twitter profile card
+ * Clean design with just username and subtle tagline
  */
 
 import { useState } from 'react';
@@ -29,36 +29,24 @@ export default function XCard() {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-                {/* Content */}
-            <div className="relative z-10 flex flex-col items-center justify-center h-full p-4">
-                {/* X Logo - Large & Centered */}
-                <div className="relative mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <XLogo className="h-10 w-10 text-white group-hover:text-white transition-colors duration-300" />
-                    <div className="absolute inset-0 blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-300">
-                        <XLogo className="h-10 w-10 text-white" />
-                    </div>
-                </div>
+            {/* X Logo - top right corner */}
+            <XLogo className="absolute top-3 right-3 h-8 w-8 text-white z-10" />
 
-                {/* Handle */}
-                <div className="text-center mb-6">
-                    <p className="font-semibold text-white text-sm group-hover:text-white transition-colors">
-                        @{X_USERNAME}
-                    </p>
-                </div>
+            {/* Subtle hover glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                {/* Follow button */}
-                <div className="relative">
-                    <div className="absolute -inset-1 bg-white/10 rounded-full blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-                    <div className="relative px-5 py-1.5 rounded-full bg-white/5 border border-white/10 group-hover:bg-white group-hover:border-white transition-all duration-300 group-hover:shadow-lg group-hover:shadow-white/10">
-                        <span className="text-xs font-semibold text-zinc-400 group-hover:text-black transition-colors duration-200">
-                            Follow
-                        </span>
-                    </div>
-                </div>
+            {/* Content */}
+            <div className="relative z-10 flex h-full flex-col justify-center p-5">
+                {/* Username */}
+                <p className="font-semibold text-white text-lg group-hover:text-zinc-200 transition-colors">
+                    @{X_USERNAME}
+                </p>
+                
+                {/* Witty tagline */}
+                <p className="text-xs text-zinc-500 mt-1">
+                    mostly lurking
+                </p>
             </div>
-
-            {/* Bottom accent line */}
-            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </a>
     );
 }

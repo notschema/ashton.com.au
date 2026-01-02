@@ -78,9 +78,9 @@ class Haunt {
         this.width = width;
         this.height = height;
         
-        // Position
+        // Position - moved up to avoid clipping
         this.x = width / 2;
-        this.y = height - 35;
+        this.y = height - 50;
         this.targetX = this.x;
         this.homeY = this.y;
         
@@ -317,122 +317,203 @@ class Haunt {
             return;
         }
         
+        // === MOOD based on conditions ===
+        const isHappy = this.isVibing || this.discordStatus === 'online' || this.showHeart;
+        const isCold = this.weatherState === 'cold';
+        const isScared = this.weatherState === 'stormy';
+        
         // === SHADOW ===
-        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
         ctx.beginPath();
-        ctx.ellipse(0, 18, 16, 5, 0, 0, Math.PI * 2);
+        ctx.ellipse(0, 28, 18, 6, 0, 0, Math.PI * 2);
         ctx.fill();
         
-        // === FEET (animate when walking) ===
-        const leftFootLift = this.isMoving ? Math.sin(this.walkCycle) * 3 : 0;
-        const rightFootLift = this.isMoving ? Math.sin(this.walkCycle + Math.PI) * 3 : 0;
-        
+        // === LEGS (drawn first, behind body) ===
         ctx.fillStyle = '#7C3AED';
-        // Left foot
+        const leftLegY = this.isMoving ? Math.sin(this.walkCycle) * 4 : 0;
+        const rightLegY = this.isMoving ? Math.sin(this.walkCycle + Math.PI) * 4 : 0;
+        
+        // Left leg
         ctx.beginPath();
-        ctx.ellipse(-8, 16 - leftFootLift, 6, 4, 0, 0, Math.PI * 2);
+        ctx.ellipse(-10, 22 - leftLegY, 8, 10, 0, 0, Math.PI * 2);
         ctx.fill();
-        // Right foot
+        // Right leg
         ctx.beginPath();
-        ctx.ellipse(8, 16 - rightFootLift, 6, 4, 0, 0, Math.PI * 2);
+        ctx.ellipse(10, 22 - rightLegY, 8, 10, 0, 0, Math.PI * 2);
         ctx.fill();
         
-        // === BODY ===
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = 'rgba(139, 92, 246, 0.35)';
+        // Feet (darker tips)
+        ctx.fillStyle = '#6D28D9';
+        ctx.beginPath();
+        ctx.ellipse(-10, 28 - leftLegY, 7, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(10, 28 - rightLegY, 7, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // === BODY (Gengar-style, more spikey, not a fat circle) ===
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = 'rgba(139, 92, 246, 0.4)';
         ctx.fillStyle = '#8B5CF6';
         ctx.beginPath();
-        ctx.ellipse(0, 0, 22, 20, 0, 0, Math.PI * 2);
+        // Main body - slightly wider at top, tapers down
+        ctx.moveTo(0, -20);
+        ctx.bezierCurveTo(24, -18, 28, 5, 22, 16);
+        ctx.bezierCurveTo(18, 20, 10, 18, 0, 18);
+        ctx.bezierCurveTo(-10, 18, -18, 20, -22, 16);
+        ctx.bezierCurveTo(-28, 5, -24, -18, 0, -20);
         ctx.fill();
         
-        // === EARS ===
+        // === BACK SPIKES (Gengar signature!) ===
         ctx.beginPath();
-        ctx.moveTo(-14, -10);
-        ctx.quadraticCurveTo(-20, -26, -10, -16);
+        ctx.moveTo(-8, -18);
+        ctx.lineTo(-6, -26);
+        ctx.lineTo(-2, -20);
+        ctx.lineTo(2, -28);
+        ctx.lineTo(6, -20);
+        ctx.lineTo(8, -26);
+        ctx.lineTo(10, -18);
+        ctx.closePath();
+        ctx.fill();
+        
+        // === EARS (sharp, pointy) ===
+        ctx.beginPath();
+        ctx.moveTo(-18, -12);
+        ctx.lineTo(-28, -30);
+        ctx.lineTo(-14, -16);
+        ctx.closePath();
         ctx.fill();
         ctx.beginPath();
-        ctx.moveTo(14, -10);
-        ctx.quadraticCurveTo(20, -26, 10, -16);
+        ctx.moveTo(18, -12);
+        ctx.lineTo(28, -30);
+        ctx.lineTo(14, -16);
+        ctx.closePath();
         ctx.fill();
         
         ctx.shadowBlur = 0;
         
-        // === BODY HIGHLIGHT ===
-        ctx.fillStyle = 'rgba(196, 181, 253, 0.35)';
+        // === BELLY HIGHLIGHT ===
+        ctx.fillStyle = 'rgba(196, 181, 253, 0.3)';
         ctx.beginPath();
-        ctx.ellipse(-5, -5, 7, 5, -0.4, 0, Math.PI * 2);
+        ctx.ellipse(-6, -4, 10, 8, -0.3, 0, Math.PI * 2);
         ctx.fill();
         
-        // === BLUSH ===
-        ctx.fillStyle = 'rgba(244, 114, 182, 0.45)';
+        // === BLUSH (bigger when happy) ===
+        const blushSize = isHappy ? 6 : 4;
+        ctx.fillStyle = isHappy ? 'rgba(251, 113, 133, 0.6)' : 'rgba(244, 114, 182, 0.4)';
         ctx.beginPath();
-        ctx.ellipse(-14, 3, 4, 2.5, 0, 0, Math.PI * 2);
+        ctx.ellipse(-18, 4, blushSize, blushSize * 0.6, 0, 0, Math.PI * 2);
         ctx.fill();
         ctx.beginPath();
-        ctx.ellipse(14, 3, 4, 2.5, 0, 0, Math.PI * 2);
+        ctx.ellipse(18, 4, blushSize, blushSize * 0.6, 0, 0, Math.PI * 2);
         ctx.fill();
         
-        // === EYES (almond/oval, less round) ===
-        const ex = this.eyeLookX * 2;
+        // === EYES (chibi oval style - wider than tall) ===
+        const ex = this.eyeLookX * 2.5;
         const ey = this.eyeLookY * 1.5;
         
         if (!this.isBlinking) {
-            // Eye whites (oval/almond shape)
-            ctx.fillStyle = '#FAFAFA';
-            ctx.beginPath();
-            ctx.ellipse(-7 + ex, -3 + ey, 6, 7, -0.1, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(7 + ex, -3 + ey, 6, 7, 0.1, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Iris
-            ctx.fillStyle = '#6D28D9';
-            ctx.beginPath();
-            ctx.ellipse(-7 + ex * 1.2, -2 + ey, 4, 5, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(7 + ex * 1.2, -2 + ey, 4, 5, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Pupil
-            ctx.fillStyle = '#1E1B4B';
-            ctx.beginPath();
-            ctx.arc(-7 + ex * 1.4, -1 + ey, 2.5, 0, Math.PI * 2);
-            ctx.arc(7 + ex * 1.4, -1 + ey, 2.5, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Sparkles
-            ctx.fillStyle = '#FFFFFF';
-            ctx.beginPath();
-            ctx.arc(-9 + ex, -5 + ey, 2, 0, Math.PI * 2);
-            ctx.arc(5 + ex, -5 + ey, 2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(-5 + ex, 0 + ey, 1, 0, Math.PI * 2);
-            ctx.arc(9 + ex, 0 + ey, 1, 0, Math.PI * 2);
-            ctx.fill();
+            if (isScared) {
+                // Scared wide eyes
+                ctx.fillStyle = '#FAFAFA';
+                ctx.beginPath();
+                ctx.ellipse(-10 + ex, -5 + ey, 9, 11, 0, 0, Math.PI * 2);
+                ctx.ellipse(10 + ex, -5 + ey, 9, 11, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#1E1B4B';
+                ctx.beginPath();
+                ctx.arc(-10 + ex, -4 + ey, 5, 0, Math.PI * 2);
+                ctx.arc(10 + ex, -4 + ey, 5, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // Chibi oval eyes (wider, cuter)
+                ctx.fillStyle = '#FAFAFA';
+                ctx.beginPath();
+                ctx.ellipse(-10 + ex, -4 + ey, 9, 7, -0.15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(10 + ex, -4 + ey, 9, 7, 0.15, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Iris (red like Gengar!)
+                ctx.fillStyle = '#DC2626';
+                ctx.beginPath();
+                ctx.ellipse(-10 + ex * 1.2, -3 + ey, 5, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(10 + ex * 1.2, -3 + ey, 5, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Pupil
+                ctx.fillStyle = '#1E1B4B';
+                ctx.beginPath();
+                ctx.arc(-10 + ex * 1.4, -2 + ey, 2.5, 0, Math.PI * 2);
+                ctx.arc(10 + ex * 1.4, -2 + ey, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Sparkles
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(-13 + ex, -7 + ey, 2.5, 0, Math.PI * 2);
+                ctx.arc(5 + ex, -7 + ey, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
         } else {
-            // Closed eyes
-            ctx.strokeStyle = '#6D28D9';
-            ctx.lineWidth = 2;
+            // Happy closed eyes (curved lines)
+            ctx.strokeStyle = '#DC2626';
+            ctx.lineWidth = 3;
             ctx.lineCap = 'round';
             ctx.beginPath();
-            ctx.arc(-7, -3, 5, Math.PI * 0.15, Math.PI * 0.85);
+            ctx.arc(-10, -4, 7, Math.PI * 0.15, Math.PI * 0.85);
             ctx.stroke();
             ctx.beginPath();
-            ctx.arc(7, -3, 5, Math.PI * 0.15, Math.PI * 0.85);
+            ctx.arc(10, -4, 7, Math.PI * 0.15, Math.PI * 0.85);
             ctx.stroke();
         }
         
-        // === MOUTH ===
-        const smileWidth = 5 + this.mouthOpen * 3;
-        ctx.strokeStyle = '#4C1D95';
-        ctx.lineWidth = 1.5;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.arc(0, 7, smileWidth, Math.PI * 0.1, Math.PI * 0.9);
-        ctx.stroke();
+        // === MOUTH (cute chibi gummy smile - no teeth!) ===
+        if (isScared) {
+            // Scared O mouth
+            ctx.fillStyle = '#1E1B4B';
+            ctx.beginPath();
+            ctx.ellipse(0, 8, 5, 6, 0, 0, Math.PI * 2);
+            ctx.fill();
+        } else {
+            // Cute gummy smile
+            const smileWidth = isHappy ? 14 : 10;
+            
+            // Mouth opening (dark)
+            ctx.fillStyle = '#4C1D95';
+            ctx.beginPath();
+            ctx.arc(0, 6, smileWidth, Math.PI * 0.1, Math.PI * 0.9);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Tongue (pink, cute!)
+            if (isHappy) {
+                ctx.fillStyle = '#F472B6';
+                ctx.beginPath();
+                ctx.ellipse(0, 10, 5, 4, 0, 0, Math.PI);
+                ctx.fill();
+            }
+        }
+        
+        // Cold shiver effect
+        if (isCold) {
+            ctx.strokeStyle = 'rgba(147, 197, 253, 0.6)';
+            ctx.lineWidth = 1.5;
+            const shiver = Math.sin(Date.now() * 0.02) * 2;
+            ctx.beginPath();
+            ctx.moveTo(-30 + shiver, -5);
+            ctx.lineTo(-26 + shiver, -8);
+            ctx.lineTo(-30 + shiver, -11);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(30 - shiver, -5);
+            ctx.lineTo(26 - shiver, -8);
+            ctx.lineTo(30 - shiver, -11);
+            ctx.stroke();
+        }
         
         // === WEATHER ACCESSORIES ===
         this.drawAccessories(ctx);
@@ -440,16 +521,17 @@ class Haunt {
         // === HEART ===
         if (this.showHeart) {
             ctx.fillStyle = '#F472B6';
-            const hy = -32 + Math.sin(Date.now() * 0.004) * 2;
+            const hy = -40 + Math.sin(Date.now() * 0.004) * 3;
+            const hScale = 0.9 + Math.sin(Date.now() * 0.008) * 0.1;
             ctx.save();
             ctx.translate(0, hy);
-            ctx.scale(0.8, 0.8);
+            ctx.scale(hScale, hScale);
             ctx.beginPath();
-            ctx.moveTo(0, 3);
-            ctx.bezierCurveTo(-3, 0, -5, -3, -5, -5);
-            ctx.bezierCurveTo(-5, -7, 0, -7, 0, -4);
-            ctx.bezierCurveTo(0, -7, 5, -7, 5, -5);
-            ctx.bezierCurveTo(5, -3, 3, 0, 0, 3);
+            ctx.moveTo(0, 4);
+            ctx.bezierCurveTo(-4, 0, -7, -4, -7, -7);
+            ctx.bezierCurveTo(-7, -10, 0, -10, 0, -5);
+            ctx.bezierCurveTo(0, -10, 7, -10, 7, -7);
+            ctx.bezierCurveTo(7, -4, 4, 0, 0, 4);
             ctx.fill();
             ctx.restore();
         }

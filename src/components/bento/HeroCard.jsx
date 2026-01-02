@@ -60,18 +60,18 @@ export default function HeroCard() {
                 {/* Greeting */}
                 <div className="mb-4">
                     <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-                        yo, i'm <span className="text-blue-400">ashton</span>
+                        hi, i'm <span className="text-blue-400">ashton</span>
                     </h1>
                     <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
-                        i break into systems for a living. pentester by day,
-                        infrastructure nerd by night. sydney-based.
+                        systems engineer & security specialist. focused on building
+                        resilient infrastructure and securing digital assets.
                     </p>
                 </div>
 
                 {/* Spiel */}
                 <p className="text-zinc-500 text-sm mb-4">
-                    if it's connected, i'll find a way in. red team ops, secure infra,
-                    and the occasional CTF when i'm bored.
+                    specializing in cloud architecture, automation, and offensive security operations.
+                    based in sydney.
                 </p>
 
                 {/* Location + Time */}
