@@ -3,14 +3,14 @@
  * HomePage - Clean Bento Grid layout
  * Removed TechStack, kept essential cards
  */
-import BaseLayout from '../layouts/BaseLayout.astro';
-import TiltCard from '../components/ui/TiltCard.jsx';
-import HeroCard from '../components/bento/HeroCard.jsx';
-import DiscordPresence from '../components/bento/DiscordPresence';
-import SpotifyPresence from '../components/bento/SpotifyPresence';
-import GitHubProfile from '../components/bento/GitHubProfile';
-import XCard from '../components/bento/XCard';
-import RetroTV from '../components/bento/RetroTV';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TiltCard from "../components/ui/TiltCard.jsx";
+import HeroCard from "../components/bento/HeroCard.jsx";
+import DiscordPresence from "../components/bento/DiscordPresence";
+import SpotifyPresence from "../components/bento/SpotifyPresence";
+import GitHubProfile from "../components/bento/GitHubProfile";
+import XCard from "../components/bento/XCard";
+import RetroTV from "../components/bento/RetroTV";
 ---
 
 <BaseLayout>
@@ -29,7 +29,7 @@ import RetroTV from '../components/bento/RetroTV';
         <SpotifyPresence client:load />
       </TiltCard>
 
-      <!-- Row 3: GitHub (2x1) + X (1x1) + Fishtank (1x1) -->
+      <!-- Row 3: GitHub (2x1) + X (1x1) + RetroTV (1x1) -->
       <TiltCard client:load className="span-2x1">
         <GitHubProfile client:load />
       </TiltCard>
