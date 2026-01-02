@@ -8,6 +8,18 @@ import { MapPin } from 'lucide-react';
 
 const TIMEZONE = 'Australia/Sydney';
 
+// Fun bio messages that rotate on refresh
+const BIO_MESSAGES = [
+    "IT consultant specializing in security and infrastructure",
+    "security researcher and penetration tester",
+    "helping businesses secure their digital infrastructure",
+    "IT security consultant based in sydney",
+    "offensive security specialist and systems engineer",
+    "freelance security consultant. breaking things professionally",
+    "penetration testing and security assessments",
+    "cybersecurity consultant. securing systems, breaking assumptions",
+];
+
 // Get contextual message based on hour
 function getTimeContext(hour) {
     if (hour >= 0 && hour < 6) return "night owl mode 🦉";
@@ -21,6 +33,9 @@ function getTimeContext(hour) {
 
 export default function HeroCard() {
     const [time, setTime] = useState(null);
+    const [bioMessage] = useState(() => 
+        BIO_MESSAGES[Math.floor(Math.random() * BIO_MESSAGES.length)]
+    );
 
     useEffect(() => {
         const update = () => setTime(new Date());
@@ -63,16 +78,9 @@ export default function HeroCard() {
                         hi, i'm <span className="text-blue-400">ashton</span>
                     </h1>
                     <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
-                        systems engineer & security specialist. focused on building
-                        resilient infrastructure and securing digital assets.
+                        {bioMessage}
                     </p>
                 </div>
-
-                {/* Spiel */}
-                <p className="text-zinc-500 text-sm mb-4">
-                    specializing in cloud architecture, automation, and offensive security operations.
-                    based in sydney.
-                </p>
 
                 {/* Location + Time */}
                 <div className="mt-auto pt-4 border-t border-white/5">

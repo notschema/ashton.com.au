@@ -434,7 +434,7 @@ export default function DiscordPresence() {
           ) : (
             <div className="h-full flex items-center justify-center px-3 py-8 rounded-lg bg-zinc-800/30 border border-white/5">
               <p className="text-sm text-zinc-500 text-center">
-                {isOffline ? '🌙 Offline' : '✨ No activity'}
+                {isOffline ? '😴 probs sleeping' : '🛋️ just vibing'}
               </p>
             </div>
           )}
