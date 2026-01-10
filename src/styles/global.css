@@ -384,14 +384,14 @@ h6 {
 /* Pulsing border glow for bento cards */
 @keyframes border-pulse {
   0%, 100% {
-    box-shadow: 0 0 20px oklch(1 0 0 / 0.1), 
-                0 0 40px oklch(1 0 0 / 0.05),
-                inset 0 0 20px oklch(1 0 0 / 0.02);
+    border-color: oklch(1 0 0 / 0.2);
+    box-shadow: 0 0 10px oklch(1 0 0 / 0.05), 
+                inset 0 0 0px oklch(1 0 0 / 0);
   }
   50% {
-    box-shadow: 0 0 30px oklch(1 0 0 / 0.2), 
-                0 0 60px oklch(1 0 0 / 0.1),
-                inset 0 0 30px oklch(1 0 0 / 0.03);
+    border-color: oklch(1 0 0 / 0.5);
+    box-shadow: 0 0 20px oklch(1 0 0 / 0.1), 
+                inset 0 0 10px oklch(1 0 0 / 0.02);
   }
 }
 

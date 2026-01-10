@@ -18,10 +18,10 @@ export default function FeatureCard({ children, className, delay = 0, ...props }
   const id = React.useId();
 
   const content = (
-    <div 
+    <div
       className={cn(
         'group relative overflow-hidden h-full border border-border/50 bg-background/50 transition-all duration-300',
-        'hover:border-foreground/20 hover:shadow-[0_0_20px_oklch(1_0_0/0.1),0_0_40px_oklch(1_0_0/0.05)] hover:animate-[border-pulse_2s_ease-in-out_infinite]',
+        'hover:animate-[border-pulse_3s_ease-in-out_infinite]',
         className
       )} 
       {...props}
