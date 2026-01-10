@@ -1,0 +1,69 @@
+---
+/**
+ * About Page - Who I Am
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About | Ashton.com.au"
+  description="About Ashton Turner - Security consultant and systems engineer based in Sydney."
+>
+  <div class="mx-auto max-w-3xl px-4 py-16">
+    <article class="space-y-8">
+      {/* Header */}
+      <div class="space-y-3">
+        <h1 class="text-4xl font-bold text-white">about</h1>
+        <p class="text-zinc-500 text-sm">a bit more about me</p>
+      </div>
+
+      {/* Main Content - Narrative Style */}
+      <div class="space-y-6 text-zinc-300 leading-relaxed">
+        <p>
+          i grew up on the central coast of australia, spending way too much
+          time on computers. that obsession turned into a career — first at <span
+            class="text-white">google</span
+          >, then <span class="text-white">apple</span>, before bouncing around
+          MSPs, healthcare IT, and telco for the better part of a decade.
+        </p>
+
+        <p>
+          somewhere along the way i got curious about security. not in a "i'm a
+          l33t hacker" way — more like "let me see if i can poke holes in this."
+          still learning, but i've been picking up pentesting, playing CTFs, and
+          hunting bugs on hackerone when i get the chance.
+        </p>
+
+        <p>
+          these days i work on a mix of infrastructure and security stuff. when
+          i'm not at the keyboard, you'll find me training muay thai, listening
+          to too much music, or occasionally touching grass.
+        </p>
+
+        <p>and yes, i did overpay for this domain.</p>
+
+        {/* Contact */}
+        <div class="pt-6 border-t border-white/5 space-y-2">
+          <p>
+            security inquiries →{" "}
+            <a
+              href="mailto:security@ashton.com.au"
+              class="text-primary hover:underline"
+            >
+              security@ashton.com.au
+            </a>
+          </p>
+          <p>
+            everything else →{" "}
+            <a
+              href="mailto:hello@ashton.com.au"
+              class="text-primary hover:underline"
+            >
+              hello@ashton.com.au
+            </a>
+          </p>
+        </div>
+      </div>
+    </article>
+  </div>
+</BaseLayout>

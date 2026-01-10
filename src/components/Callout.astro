@@ -1,0 +1,63 @@
+---
+interface Props {
+  type?: "note" | "tip" | "warning" | "important" | "caution";
+  title?: string;
+}
+
+const { type = "note", title } = Astro.props;
+
+const typeConfig = {
+  note: {
+    label: title || "Note",
+    icon: "M13 2L3 14h9l-1 8 10-12h-9l1-8z", // Info icon
+    classes: "bg-blue-500/10 border-blue-500/50 text-blue-500",
+  },
+  tip: {
+    label: title || "Tip",
+    icon: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5", // Lightbulb
+    classes: "bg-green-500/10 border-green-500/50 text-green-500",
+  },
+  warning: {
+    label: title || "Warning",
+    icon: "M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z", //M12 9v2m0 4h.01', // Alert triangle
+    classes: "bg-yellow-500/10 border-yellow-500/50 text-yellow-500",
+  },
+  important: {
+    label: title || "Important",
+    icon: "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", // Circle
+    classes: "bg-purple-500/10 border-purple-500/50 text-purple-500",
+  },
+  caution: {
+    label: title || "Caution",
+    icon: "M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z", // Alert triangle
+    classes: "bg-red-500/10 border-red-500/50 text-red-500",
+  },
+};
+
+const config = typeConfig[type];
+---
+
+<div class={`not-prose my-6 rounded-lg border-l-4 p-4 ${config.classes}`}>
+  <div class="flex items-start gap-3">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="flex-shrink-0 mt-0.5"
+    >
+      <path d={config.icon}></path>
+    </svg>
+    <div class="flex-1">
+      <div class="font-bold text-sm mb-1">{config.label}</div>
+      <div class="text-sm text-foreground/90 [&>p]:m-0">
+        <slot />
+      </div>
+    </div>
+  </div>
+</div>

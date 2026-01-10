@@ -1,0 +1,41 @@
+---
+/**
+ * Reading Progress Bar
+ * Shows scroll progress at top of page
+ */
+---
+
+<div
+  id="reading-progress"
+  class="fixed top-0 left-0 h-1 bg-primary z-[100] transition-all duration-150"
+  style="width: 0%"
+>
+</div>
+
+<script>
+  function updateReadingProgress() {
+    const progress = document.getElementById("reading-progress");
+    if (!progress) return;
+
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const scrollTop = window.scrollY;
+
+    const scrollableHeight = documentHeight - windowHeight;
+    const scrollPercentage =
+      scrollableHeight > 0 ? (scrollTop / scrollableHeight) * 100 : 0;
+
+    progress.style.width = `${Math.min(scrollPercentage, 100)}%`;
+  }
+
+  // Update on scroll
+  window.addEventListener("scroll", updateReadingProgress, { passive: true });
+
+  // Update on page load
+  document.addEventListener("astro:page-load", updateReadingProgress);
+
+  // Cleanup
+  document.addEventListener("astro:before-swap", () => {
+    window.removeEventListener("scroll", updateReadingProgress);
+  });
+</script>

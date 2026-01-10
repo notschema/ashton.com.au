@@ -1,0 +1,82 @@
+---
+interface Props {
+  prevPost?: {
+    id: string;
+    title: string;
+  };
+  nextPost?: {
+    id: string;
+    title: string;
+  };
+}
+
+const { prevPost, nextPost } = Astro.props;
+---
+
+{
+  (prevPost || nextPost) && (
+    <nav class="mt-16 pt-8 border-t border-border" aria-label="Post navigation">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Previous Post */}
+        {prevPost ? (
+          <a
+            href={`/blog/${prevPost.id}`}
+            class="group flex flex-col p-6 rounded-lg border border-border bg-card hover:bg-muted hover:border-primary/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            <span class="text-xs font-mono text-muted-foreground mb-2 flex items-center gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+              </svg>
+              Previous
+            </span>
+            <span class="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
+              {prevPost.title}
+            </span>
+          </a>
+        ) : (
+          <div />
+        )}
+
+        {/* Next Post */}
+        {nextPost && (
+          <a
+            href={`/blog/${nextPost.id}`}
+            class="group flex flex-col p-6 rounded-lg border border-border bg-card hover:bg-muted hover:border-primary/50 transition-all text-right md:col-start-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            <span class="text-xs font-mono text-muted-foreground mb-2 flex items-center justify-end gap-2">
+              Next
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+            <span class="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
+              {nextPost.title}
+            </span>
+          </a>
+        )}
+      </div>
+    </nav>
+  )
+}

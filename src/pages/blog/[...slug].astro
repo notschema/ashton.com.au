@@ -1,0 +1,353 @@
+---
+import { getCollection, render } from "astro:content";
+import BlogLayout from "../../layouts/BlogLayout.astro";
+import { Image } from "astro:assets";
+import PostNavigation from "../../components/PostNavigation.astro";
+import TableOfContents from "../../components/TableOfContents.astro";
+import SubpostsSidebar from "../../components/SubpostsSidebar.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+import {
+  isSubpost,
+  getParentPost,
+  hasSubposts,
+  getParentId,
+  getAdjacentSubposts,
+  getSubposts,
+} from "../../lib/subpost-utils";
+
+// Helper to calculate reading time
+function getReadingTime(content: string): string {
+  const wordsPerMinute = 200;
+  const words = content.split(/\s+/).length;
+  const minutes = Math.ceil(words / wordsPerMinute);
+  return `${minutes} min read`;
+}
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+
+  // Filter out subposts for navigation - only navigate between top-level posts
+  const topLevelPosts = posts.filter((post) => !post.id.includes("/"));
+
+  // Sort posts by date
+  const sortedPosts = topLevelPosts.sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  );
+
+  // Map ALL posts (including subposts) but calculate different nav for each type
+  const paths = await Promise.all(
+    posts.map(async (post) => {
+      let prevPost = null;
+      let nextPost = null;
+
+      if (post.id.includes("/")) {
+        // This is a subpost - navigate within the series
+        const adjacentSubposts = await getAdjacentSubposts(post.id);
+        prevPost = adjacentSubposts.previous
+          ? {
+              id: adjacentSubposts.previous.id,
+              title: adjacentSubposts.previous.data.title,
+            }
+          : null;
+        nextPost = adjacentSubposts.next
+          ? {
+              id: adjacentSubposts.next.id,
+              title: adjacentSubposts.next.data.title,
+            }
+          : null;
+      } else {
+        // This is a top-level post - navigate to other top-level posts or start series
+        const subposts = await getSubposts(post.id);
+
+        if (subposts.length > 0) {
+          // Parent post with children: Next -> First Subpost (Start Series)
+          const topLevelIndex = sortedPosts.findIndex((p) => p.id === post.id);
+
+          // Calculate previous normally (chronological)
+          const prev =
+            topLevelIndex !== -1 && topLevelIndex < sortedPosts.length - 1
+              ? sortedPosts[topLevelIndex + 1]
+              : null;
+
+          prevPost = prev ? { id: prev.id, title: prev.data.title } : null;
+          // Next points to child
+          nextPost = {
+            id: subposts[0].id,
+            title: `Start Reading: ${subposts[0].data.title}`,
+          };
+        } else {
+          // Standalone top-level post: Standard chronological navigation
+          const topLevelIndex = sortedPosts.findIndex((p) => p.id === post.id);
+
+          if (topLevelIndex !== -1) {
+            const prev =
+              topLevelIndex < sortedPosts.length - 1
+                ? sortedPosts[topLevelIndex + 1]
+                : null;
+            const next =
+              topLevelIndex > 0 ? sortedPosts[topLevelIndex - 1] : null;
+
+            prevPost = prev ? { id: prev.id, title: prev.data.title } : null;
+            nextPost = next ? { id: next.id, title: next.data.title } : null;
+          }
+        }
+      }
+
+      return {
+        params: { slug: post.id },
+        props: {
+          post,
+          prevPost,
+          nextPost,
+        },
+      };
+    })
+  );
+
+  return paths;
+}
+
+const { post, prevPost, nextPost } = Astro.props;
+const { Content, headings } = await render(post);
+const readingTime = getReadingTime(post.body);
+
+// Subpost detection
+const isCurrentSubpost = isSubpost(post.id);
+const parentPost = isCurrentSubpost ? await getParentPost(post.id) : null;
+const hasChildPosts = await hasSubposts(post.id);
+const parentId = isCurrentSubpost ? getParentId(post.id) : null;
+
+// Determine layout type
+const showToC =
+  !isCurrentSubpost && !hasChildPosts && headings && headings.length > 0;
+const showSubpostsLeft = isCurrentSubpost && parentId;
+const showSubpostsForParent = hasChildPosts && !isCurrentSubpost;
+---
+
+<BlogLayout
+  title={post.data.title}
+  description={post.data.description}
+  articleDate={post.data.date}
+  image={post.data.cover ? post.data.cover.src : undefined}
+>
+  {/* Full page container */}
+  <div class="max-w-7xl mx-auto px-4">
+    {/* Breadcrumbs */}
+    <div class="mb-6">
+      <Breadcrumb />
+    </div>
+
+    {/* Hero Image */}
+    {
+      post.data.cover && (
+        <div class="mb-10">
+          <Image
+            src={post.data.cover}
+            alt={post.data.title}
+            width={1200}
+            height={400}
+            class="w-full h-auto max-h-[400px] object-cover rounded-xl border border-border/50"
+          />
+        </div>
+      )
+    }
+
+    {/* Post Header */}
+    <header class="mb-10 text-center max-w-3xl mx-auto">
+      {/* Parent link for subposts */}
+      {
+        isCurrentSubpost && parentPost && (
+          <a
+            href={`/blog/${parentId}`}
+            class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-3"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            <span class="font-mono">{parentPost.data.title}</span>
+          </a>
+        )
+      }
+
+      <h1 class="mb-4 text-3xl leading-tight font-bold sm:text-4xl">
+        {post.data.title}
+      </h1>
+
+      {/* Metadata */}
+      <div
+        class="text-muted-foreground mb-4 flex flex-col items-center justify-center divide-y sm:flex-row sm:flex-wrap sm:divide-x sm:divide-y-0 text-sm border-border"
+      >
+        {
+          post.data.authors && post.data.authors.length > 0 && (
+            <a
+              href={`/authors/${post.data.authors[0]}`}
+              class="flex items-center gap-2 py-2 sm:px-3 sm:py-0 hover:text-primary transition-colors"
+            >
+              <span class="text-primary">@</span>
+              <span>{post.data.authors[0]}</span>
+            </a>
+          )
+        }
+
+        <div class="flex items-center gap-2 py-2 sm:px-3 sm:py-0">
+          <time datetime={post.data.date.toISOString()}>
+            {
+              post.data.date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })
+            }
+          </time>
+        </div>
+
+        <div class="flex items-center gap-2 py-2 sm:px-3 sm:py-0">
+          <span>{readingTime}</span>
+        </div>
+      </div>
+
+      {/* Tags */}
+      {
+        post.data.tags && post.data.tags.length > 0 && (
+          <div class="flex flex-wrap justify-center gap-2">
+            {post.data.tags.map((tag) => (
+              <a
+                href={`/tags/${tag}`}
+                class="inline-flex items-center px-2.5 py-1 rounded-md bg-muted/50 border border-border/50 text-xs font-mono text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="mr-1"
+                >
+                  <line x1="4" y1="9" x2="20" y2="9" />
+                  <line x1="4" y1="15" x2="20" y2="15" />
+                  <line x1="10" y1="3" x2="8" y2="21" />
+                  <line x1="16" y1="3" x2="14" y2="21" />
+                </svg>
+                {tag}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    {/* Content Grid - Always 2 columns with left sidebar */}
+    <div class="grid gap-8 xl:grid-cols-[16rem_1fr]">
+      {
+        /* Left Sidebar: ToC for regular posts, Subposts for parent/child posts */
+      }
+      {
+        showToC && (
+          <aside class="hidden xl:block">
+            <TableOfContents headings={headings} />
+          </aside>
+        )
+      }
+
+      {
+        (showSubpostsLeft || showSubpostsForParent) && (
+          <aside class="hidden xl:block">
+            <SubpostsSidebar
+              parentId={showSubpostsLeft ? parentId! : post.id}
+              currentPostId={isCurrentSubpost ? post.id : undefined}
+            />
+          </aside>
+        )
+      }
+
+      {/* Main Content */}
+      <div class="max-w-3xl mx-auto w-full">
+        <article
+          class="prose prose-invert prose-headings:font-bold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl max-w-none mb-12"
+        >
+          <Content />
+        </article>
+
+        {/* Mobile subposts list */}
+        {
+          (showSubpostsLeft || showSubpostsForParent) && (
+            <div class="xl:hidden mb-12 p-6 border border-border rounded-xl bg-muted/20">
+              <SubpostsSidebar
+                parentId={showSubpostsLeft ? parentId! : post.id}
+                currentPostId={isCurrentSubpost ? post.id : undefined}
+              />
+            </div>
+          )
+        }
+
+        <PostNavigation prevPost={prevPost} nextPost={nextPost} />
+      </div>
+    </div>
+  </div>
+
+  {/* Scroll to Top */}
+  <button
+    id="scroll-to-top"
+    class="group fixed right-8 bottom-8 z-50 hidden p-3 rounded-lg bg-card border border-border hover:bg-muted hover:border-primary/50 transition-all shadow-lg"
+    title="Scroll to top"
+    aria-label="Scroll to top"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="transition-all group-hover:-translate-y-0.5"
+    >
+      <line x1="12" y1="19" x2="12" y2="5"></line>
+      <polyline points="5 12 12 5 19 12"></polyline>
+    </svg>
+  </button>
+</BlogLayout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const scrollToTopButton = document.getElementById("scroll-to-top");
+    const footer = document.querySelector("footer");
+
+    if (scrollToTopButton && footer) {
+      scrollToTopButton.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      window.addEventListener(
+        "scroll",
+        () => {
+          const footerRect = footer.getBoundingClientRect();
+          const isFooterVisible = footerRect.top <= window.innerHeight;
+
+          scrollToTopButton.classList.toggle(
+            "hidden",
+            window.scrollY <= 300 || isFooterVisible
+          );
+        },
+        { passive: true }
+      );
+    }
+  });
+</script>

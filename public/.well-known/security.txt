@@ -1,0 +1,18 @@
+# Security Policy for ashton.com.au
+# Hey, you found this! Nice.
+
+Contact: mailto:security@ashton.com.au
+Expires: 2027-01-01T00:00:00.000Z
+Preferred-Languages: en
+
+# What to report:
+# - Did I commit an API key again? Probably. Let me know.
+# - Something actually serious? Please yell at me.
+# - XSS, SQLi, auth bypass, etc? Very cool, email me.
+
+# What's probably not worth reporting:
+# - Missing security headers on a static portfolio site
+# - SPF/DKIM/DMARC stuff (I know, I know)
+# - "I can see your GitHub repos" - yeah they're public
+
+# Thanks for looking out! 🙏

@@ -1,0 +1,125 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+import { Image } from "astro:assets";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+
+  // Get all unique tags
+  const tags = new Set<string>();
+  posts.forEach((post) => {
+    post.data.tags?.forEach((tag) => tags.add(tag));
+  });
+
+  return Array.from(tags).map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter((post) => post.data.tags?.includes(tag))
+        .sort(
+          (a, b) =>
+            new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+        ),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`#${tag} | Blog`} description={`Posts tagged with ${tag}`}>
+  <div class="max-w-4xl mx-auto">
+    <Breadcrumb />
+
+    <div class="mb-12">
+      <h1 class="text-4xl font-bold mb-4 flex items-center gap-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-primary"
+        >
+          <line x1="4" y1="9" x2="20" y2="9"></line>
+          <line x1="4" y1="15" x2="20" y2="15"></line>
+          <line x1="10" y1="3" x2="8" y2="21"></line>
+          <line x1="16" y1="3" x2="14" y2="21"></line>
+        </svg>
+        {tag}
+      </h1>
+      <p class="text-muted-foreground">
+        {posts.length} post{posts.length === 1 ? "" : "s"} tagged with <span
+          class="text-primary font-mono">#{tag}</span
+        >
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6">
+      {
+        posts.map(async (post) => {
+          const readingTime = Math.ceil(post.body.split(/\s+/).length / 200);
+
+          return (
+            <article class="group relative overflow-hidden rounded-xl border border-border bg-card hover:border-primary/50 transition-all">
+              <a
+                href={`/blog/${post.id}`}
+                class="focus:outline-none absolute inset-0 z-10"
+              >
+                <span class="sr-only">Read {post.data.title}</span>
+              </a>
+
+              <div class="flex flex-col md:flex-row min-h-[240px]">
+                {/* Image */}
+                {post.data.cover && (
+                  <div class="relative w-full md:w-72 flex-shrink-0 overflow-hidden">
+                    <Image
+                      src={post.data.cover}
+                      alt={post.data.title}
+                      class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      width={288}
+                      height={240}
+                    />
+                  </div>
+                )}
+
+                {/* Content */}
+                <div class="relative p-6 md:p-8 flex flex-col flex-1 justify-between">
+                  <div class="space-y-3 mb-4">
+                    <h2 class="text-2xl font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
+                      {post.data.title}
+                    </h2>
+
+                    <p class="text-sm text-muted-foreground/90 line-clamp-2 leading-relaxed">
+                      {post.data.description}
+                    </p>
+                  </div>
+
+                  {/* Metadata */}
+                  <div class="flex flex-wrap items-center gap-3 text-xs text-muted-foreground/80 font-mono">
+                    <time datetime={post.data.date.toISOString()}>
+                      {post.data.date.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </time>
+                    <span class="text-border">|</span>
+                    <span>{readingTime} min read</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</BaseLayout>

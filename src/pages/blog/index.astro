@@ -1,0 +1,187 @@
+---
+/**
+ * Blog Index Page
+ * Feature-rich cards with metadata
+ */
+import BlogLayout from "../../layouts/BlogLayout.astro";
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import {
+  isSubpost,
+  hasSubposts,
+  getSubpostCount,
+} from "../../lib/subpost-utils";
+
+const posts = await getCollection("blog");
+
+// Filter out subposts - only show parent posts and standalone posts
+const topLevelPosts = posts.filter((post) => !isSubpost(post.id));
+
+const sortedPosts = topLevelPosts.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+// Helper function to estimate reading time
+function getReadingTime(content: string): string {
+  const wordsPerMinute = 200;
+  const words = content.split(/\s+/).length;
+  const minutes = Math.ceil(words / wordsPerMinute);
+  return `${minutes} min read`;
+}
+---
+
+<BlogLayout
+  title="Blog | Ashton.com.au"
+  description="Digital garden. Security, infrastructure, and experiments."
+>
+  <div class="max-w-4xl mx-auto">
+    <div class="not-prose space-y-8">
+      {/* Intro */}
+      <div class="space-y-2 mb-8">
+        <h1 class="text-3xl font-bold tracking-tight">writing</h1>
+        <p class="text-muted-foreground text-sm">
+          security research, infrastructure, and other things.
+        </p>
+      </div>
+
+      {/* Post List - Feature-rich cards */}
+      <div class="grid grid-cols-1 gap-4">
+        {
+          sortedPosts.length > 0 ? (
+            sortedPosts.map(async (post) => {
+              const { Content, remarkPluginFrontmatter } = await render(post);
+              const readingTime = getReadingTime(post.body);
+              const isSeries = await hasSubposts(post.id);
+              const subpostCount = isSeries
+                ? await getSubpostCount(post.id)
+                : 0;
+
+              return (
+                <article class="group relative bg-card/50 hover:bg-card transition-colors border-b border-border/50 last:border-b-0">
+                  <a
+                    href={`/blog/${post.id}`}
+                    class="focus:outline-none absolute inset-0 z-10"
+                  >
+                    <span class="sr-only">Read {post.data.title}</span>
+                  </a>
+
+                  <div class="flex gap-6 py-6">
+                    {/* Left: Square Image with Series Icon */}
+                    {post.data.cover && (
+                      <div class="relative w-40 h-40 flex-shrink-0 overflow-hidden">
+                        <Image
+                          src={post.data.cover}
+                          alt={post.data.title}
+                          class="h-full w-full object-cover"
+                          width={160}
+                          height={160}
+                        />
+                        {/* Series Icon Overlay */}
+                        {isSeries && (
+                          <div class="absolute top-2 left-2 w-6 h-6 bg-background/80 backdrop-blur-sm flex items-center justify-center">
+                            <svg
+                              class="w-3.5 h-3.5 text-muted-foreground"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            >
+                              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Right: Content Section */}
+                    <div class="flex flex-col flex-1 justify-between min-w-0">
+                      {/* Title */}
+                      <h2 class="text-xl font-bold text-foreground group-hover:text-primary transition-colors leading-tight mb-2">
+                        {post.data.title}
+                      </h2>
+
+                      {/* Description */}
+                      <p class="text-sm text-muted-foreground/80 line-clamp-2 leading-relaxed mb-3">
+                        {post.data.description}
+                      </p>
+
+                      {/* Metadata Row */}
+                      <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground/70 font-mono mb-3">
+                        {/* Author with Avatar */}
+                        {post.data.authors && post.data.authors.length > 0 && (
+                          <a
+                            href={`/authors/${post.data.authors[0]}`}
+                            class="relative z-20 flex items-center gap-1.5 hover:text-primary transition-colors"
+                          >
+                            <div class="w-4 h-4 rounded-full bg-muted flex items-center justify-center">
+                              <span class="text-[8px] text-muted-foreground">
+                                👤
+                              </span>
+                            </div>
+                            <span>{post.data.authors[0]}</span>
+                          </a>
+                        )}
+
+                        <span class="text-border">|</span>
+
+                        {/* Date */}
+                        <time datetime={post.data.date.toISOString()}>
+                          {post.data.date.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </time>
+
+                        <span class="text-border">|</span>
+
+                        {/* Reading Time */}
+                        <span>{readingTime}</span>
+
+                        {/* Subpost Count */}
+                        {isSeries && subpostCount > 0 && (
+                          <>
+                            <span class="text-border">|</span>
+                            <div class="flex items-center gap-1">
+                              <svg
+                                class="w-3 h-3"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                              >
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                              </svg>
+                              <span>{subpostCount} subposts</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Tags */}
+                      {post.data.tags && post.data.tags.length > 0 && (
+                        <div class="flex flex-wrap gap-2">
+                          {post.data.tags.map((tag) => (
+                            <span class="inline-flex items-center px-2 py-0.5 bg-muted/30 border border-border/30 text-xs font-mono text-muted-foreground/80">
+                              # {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })
+          ) : (
+            <div class="col-span-full text-center py-12 border border-dashed border-border">
+              <p class="text-muted-foreground">No signals detected yet.</p>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</BlogLayout>

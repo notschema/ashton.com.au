@@ -1,0 +1,133 @@
+---
+/**
+ * Subposts Sidebar
+ * Navigation for hierarchical blog posts
+ */
+import type { CollectionEntry } from "astro:content";
+import { getSubposts } from "../lib/subpost-utils";
+
+interface Props {
+  parentId: string;
+  currentPostId?: string;
+}
+
+const { parentId, currentPostId } = Astro.props;
+
+// Fetch all subposts for this parent
+const subposts = await getSubposts(parentId);
+---
+
+{
+  subposts.length > 0 && (
+    <aside
+      class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto"
+      aria-label="Subposts Navigation"
+    >
+      <nav class="flex flex-col gap-4">
+        {/* Header */}
+        <div class="flex items-center gap-2 pb-3 border-b border-border">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="text-primary"
+          >
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+          <span class="text-xs font-mono text-foreground font-bold uppercase tracking-wider">
+            Series
+          </span>
+        </div>
+
+        {/* Subpost List */}
+        <ul class="flex flex-col gap-0.5">
+          {subposts.map((subpost, index) => {
+            const isActive = currentPostId === subpost.id;
+            const displayName =
+              subpost.data.title || subpost.id.split("/").pop();
+
+            return (
+              <li>
+                <a
+                  href={`/blog/${subpost.id}`}
+                  class={`group flex items-start gap-3 py-2.5 px-3 rounded-lg transition-all ${
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                  }`}
+                >
+                  <span
+                    class={`text-sm font-mono font-bold flex-shrink-0 mt-0.5 ${
+                      isActive
+                        ? "text-primary"
+                        : "text-muted-foreground/60 group-hover:text-muted-foreground"
+                    }`}
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span class="text-sm leading-relaxed">{displayName}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* Back to Parent */}
+        <a
+          href={`/blog/${parentId}`}
+          class="mt-2 pt-3 border-t border-border text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 font-mono"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          Back to overview
+        </a>
+      </nav>
+    </aside>
+  )
+}
+
+<style>
+  /* Custom scrollbar for subposts sidebar */
+  aside {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.25 0 0) transparent;
+  }
+
+  aside::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  aside::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  aside::-webkit-scrollbar-thumb {
+    background: oklch(0.25 0 0);
+    border-radius: 3px;
+  }
+
+  aside::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.35 0 0);
+  }
+</style>

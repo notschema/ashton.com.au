@@ -1,0 +1,34 @@
+---
+import CodeCopyButton from "./CodeCopyButton";
+
+interface Props {
+  code: string;
+  language?: string;
+  title?: string;
+}
+
+const { code, language, title } = Astro.props;
+---
+
+<div class="relative group my-6">
+  {
+    title && (
+      <div class="px-4 py-2 bg-muted/50 border-b border-border text-xs font-mono text-muted-foreground rounded-t-lg">
+        {title}
+      </div>
+    )
+  }
+  <pre
+    class={`language-${language || "plaintext"} ${title ? "rounded-t-none" : ""}`}><code><slot /></code></pre>
+  <CodeCopyButton client:load code={code} />
+</div>
+
+<style>
+  pre {
+    @apply relative rounded-lg bg-muted/30 border border-border p-4 overflow-x-auto;
+  }
+
+  pre code {
+    @apply text-sm font-mono;
+  }
+</style>

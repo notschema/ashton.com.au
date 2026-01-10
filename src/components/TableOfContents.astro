@@ -1,0 +1,244 @@
+---
+/**
+ * Table of Contents - Sidebar Version
+ * Feature-rich with viewport-based active detection
+ */
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+// Helper to get margin based on depth
+function getHeadingMargin(depth: number): string {
+  return depth === 3 ? "ml-4" : depth === 4 ? "ml-8" : "";
+}
+---
+
+{
+  headings && headings.length > 0 && (
+    <nav
+      id="toc-sidebar-container"
+      class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto"
+      aria-label="Table of Contents"
+      data-toc-scroll-area
+    >
+      <div class="flex flex-col gap-3">
+        <span class="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+          On this page
+        </span>
+
+        <ul class="flex list-none flex-col gap-y-2 border-l-2 border-border pl-4">
+          {headings.map((heading) => (
+            <li
+              class={`text-sm ${getHeadingMargin(heading.depth)} text-muted-foreground transition-colors duration-200`}
+            >
+              <a
+                href={`#${heading.slug}`}
+                class="block py-1 hover:text-primary transition-colors underline decoration-transparent underline-offset-2 hover:decoration-inherit"
+                data-heading-link={heading.slug}
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  )
+}
+
+<script>
+  const HEADER_OFFSET = 100;
+
+  class TOCState {
+    links: NodeListOf<Element> = document.querySelectorAll(
+      "[data-heading-link]"
+    );
+    activeIds: string[] = [];
+    headings: HTMLElement[] = [];
+    regions: { id: string; start: number; end: number }[] = [];
+
+    reset() {
+      this.links = document.querySelectorAll(
+        "#toc-sidebar-container [data-heading-link]"
+      );
+      this.activeIds = [];
+      this.headings = [];
+      this.regions = [];
+    }
+  }
+
+  const state = new TOCState();
+
+  class HeadingRegions {
+    static build() {
+      // Find all headings in prose content
+      state.headings = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".prose h2, .prose h3, .prose h4, .prose h5, .prose h6"
+        )
+      );
+
+      if (state.headings.length === 0) {
+        state.regions = [];
+        return;
+      }
+
+      // Build regions for each heading
+      state.regions = state.headings.map((heading, index) => {
+        const nextHeading = state.headings[index + 1];
+        return {
+          id: heading.id,
+          start: heading.offsetTop,
+          end: nextHeading ? nextHeading.offsetTop : document.body.scrollHeight,
+        };
+      });
+    }
+
+    static getVisibleIds(): string[] {
+      if (state.headings.length === 0) return [];
+
+      const viewportTop = window.scrollY + HEADER_OFFSET;
+      const viewportBottom = window.scrollY + window.innerHeight;
+      const visibleIds = new Set<string>();
+
+      const isInViewport = (top: number, bottom: number) =>
+        (top >= viewportTop && top <= viewportBottom) ||
+        (bottom >= viewportTop && bottom <= viewportBottom) ||
+        (top <= viewportTop && bottom >= viewportBottom);
+
+      // Check if heading itself is in viewport
+      state.headings.forEach((heading) => {
+        const headingBottom = heading.offsetTop + heading.offsetHeight;
+        if (isInViewport(heading.offsetTop, headingBottom)) {
+          visibleIds.add(heading.id);
+        }
+      });
+
+      // Check if we're in a heading's region
+      state.regions.forEach((region) => {
+        if (region.start <= viewportBottom && region.end >= viewportTop) {
+          const heading = document.getElementById(region.id);
+          if (heading) {
+            const headingBottom = heading.offsetTop + heading.offsetHeight;
+            if (
+              region.end > headingBottom &&
+              (headingBottom < viewportBottom || viewportTop < region.end)
+            ) {
+              visibleIds.add(region.id);
+            }
+          }
+        }
+      });
+
+      return Array.from(visibleIds);
+    }
+  }
+
+  class TOCLinks {
+    static update(headingIds: string[]) {
+      // Remove active state from all links
+      state.links.forEach((link) => {
+        link.classList.remove("text-primary", "font-medium");
+        link.classList.add("text-muted-foreground");
+      });
+
+      // Add active state to visible headings
+      headingIds.forEach((id) => {
+        if (id) {
+          const activeLink = document.querySelector(
+            `#toc-sidebar-container [data-heading-link="${id}"]`
+          );
+          if (activeLink) {
+            activeLink.classList.add("text-primary", "font-medium");
+            activeLink.classList.remove("text-muted-foreground");
+          }
+        }
+      });
+    }
+  }
+
+  class TOCController {
+    static handleScroll() {
+      const newActiveIds = HeadingRegions.getVisibleIds();
+
+      if (JSON.stringify(newActiveIds) !== JSON.stringify(state.activeIds)) {
+        state.activeIds = newActiveIds;
+        TOCLinks.update(state.activeIds);
+      }
+    }
+
+    static handleResize() {
+      HeadingRegions.build();
+      const newActiveIds = HeadingRegions.getVisibleIds();
+
+      if (JSON.stringify(newActiveIds) !== JSON.stringify(state.activeIds)) {
+        state.activeIds = newActiveIds;
+        TOCLinks.update(state.activeIds);
+      }
+    }
+
+    static init() {
+      state.reset();
+      HeadingRegions.build();
+
+      if (state.headings.length === 0) {
+        TOCLinks.update([]);
+        return;
+      }
+
+      this.handleScroll();
+
+      const options = { passive: true };
+      window.addEventListener("scroll", this.handleScroll, options);
+      window.addEventListener("resize", this.handleResize, options);
+    }
+
+    static cleanup() {
+      window.removeEventListener("scroll", this.handleScroll);
+      window.removeEventListener("resize", this.handleResize);
+
+      Object.assign(state, {
+        activeIds: [],
+        headings: [],
+        regions: [],
+      });
+    }
+  }
+
+  // Astro view transitions support
+  document.addEventListener("astro:page-load", () => TOCController.init());
+  document.addEventListener("astro:after-swap", () => {
+    TOCController.cleanup();
+    TOCController.init();
+  });
+  document.addEventListener("astro:before-swap", () => TOCController.cleanup());
+</script>
+
+<style>
+  /* Custom scrollbar for ToC */
+  [data-toc-scroll-area] {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.25 0 0) transparent;
+  }
+
+  [data-toc-scroll-area]::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  [data-toc-scroll-area]::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  [data-toc-scroll-area]::-webkit-scrollbar-thumb {
+    background: oklch(0.25 0 0);
+    border-radius: 3px;
+  }
+
+  [data-toc-scroll-area]::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.35 0 0);
+  }
+</style>
