@@ -21,7 +21,7 @@ export default function FeatureCard({ children, className, delay = 0, ...props }
     <div
       className={cn(
         'group relative overflow-hidden h-full border border-border/50 bg-background/50 transition-all duration-300',
-        'hover:animate-[border-pulse_3s_ease-in-out_infinite]',
+        'hover:border-foreground/20',
         className
       )} 
       {...props}
