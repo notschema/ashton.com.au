@@ -216,9 +216,8 @@ body::before {
   }
 
   .glass-card:hover {
-    border-color: oklch(1 0 0 / 0.2);
-    box-shadow: 0 0 30px var(--glow-white), 0 0 60px oklch(1 0 0 / 0.05),
-      inset 0 0 30px oklch(1 0 0 / 0.02);
+    border-color: oklch(1 0 0 / 0.25);
+    animation: border-pulse 2s ease-in-out infinite;
   }
 
   /* Status indicators */
@@ -379,6 +378,20 @@ h6 {
 
   50% {
     opacity: 0.5;
+  }
+}
+
+/* Pulsing border glow for bento cards */
+@keyframes border-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px oklch(1 0 0 / 0.1), 
+                0 0 40px oklch(1 0 0 / 0.05),
+                inset 0 0 20px oklch(1 0 0 / 0.02);
+  }
+  50% {
+    box-shadow: 0 0 30px oklch(1 0 0 / 0.2), 
+                0 0 60px oklch(1 0 0 / 0.1),
+                inset 0 0 30px oklch(1 0 0 / 0.03);
   }
 }
 
