@@ -267,6 +267,7 @@ export default function DiscordPresence() {
   const customEmoji = customStatusActivity?.emoji;
   
   // Filter out custom status (type 4) AND Spotify (type 2)
+  // Filter out custom status (type 4) AND Spotify (type 2)
   const displayActivities = activities?.filter(a => 
     a.type !== 4 && !(a.type === 2 && a.name === 'Spotify')
   ) || [];
@@ -278,17 +279,12 @@ export default function DiscordPresence() {
   const isOffline = discord_status === 'offline';
   const statusColor = STATUS_COLORS[discord_status] || STATUS_COLORS.offline;
 
-  // Parse badges from public_flags
-  const badges = [];
-  if (discord_user?.public_flags) {
-    const flags = discord_user.public_flags;
-    Object.keys(DISCORD_BADGES).forEach(badgeKey => {
-      // This is a simplified mapping - actual flag values would need proper bit checking
-      if (flags & (1 << Object.keys(DISCORD_BADGES).indexOf(badgeKey))) {
-        badges.push(DISCORD_BADGES[badgeKey]);
-      }
-    });
-  }
+  // Hardcoded badges for display (API doesn't reliably return these)
+  const badges = [
+    DISCORD_BADGES.active_developer,          // 🔧 Active Developer
+    DISCORD_BADGES.early_supporter,           // ⭐ Early Supporter
+    DISCORD_BADGES.premium,                   // 💎 Nitro
+  ];
 
   const getEmojiDisplay = () => {
     if (!customEmoji) return null;
@@ -359,7 +355,7 @@ export default function DiscordPresence() {
                    <span className="text-muted-foreground/30 text-xs">|</span>
                    <div className="flex gap-0.5">
                      {badges.map((badge, i) => (
-                       <span key={i} className="text-xs scale-110" title={badge.label}>{badge.icon}</span>
+                       <span key={i} className="text-xs scale-110 grayscale opacity-60" title={badge.label}>{badge.icon}</span>
                      ))}
                    </div>
                  </div>
@@ -460,5 +456,6 @@ export default function DiscordPresence() {
     </a>
   );
 }
+
 
 
