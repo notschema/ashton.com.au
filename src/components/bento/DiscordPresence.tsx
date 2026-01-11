@@ -325,80 +325,138 @@ export default function DiscordPresence() {
         <FaDiscord className="h-5 w-5 text-muted-foreground/40 group-hover:text-[#5865F2] transition-colors" />
       </div>
 
-      {/* Main Content Row */}
-      <div className="flex flex-col sm:flex-row flex-1 min-h-0">
-        {/* Left Column: Profile */}
-        <div className="relative flex flex-col p-4 sm:w-1/2 sm:border-r sm:border-border/30 justify-center min-w-0">
-          <div className="flex items-center gap-3">
-            <div className="relative flex-shrink-0">
-              {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt="Avatar"
-                  className={cn(
-                    "h-10 w-10 bg-muted object-cover ring-2 ring-transparent transition-all",
-                    isOffline ? "grayscale" : "group-hover:ring-[#5865F2]/20"
-                  )}
-                />
-              ) : (
-                <div className="h-10 w-10 bg-muted flex items-center justify-center">
-                  <FaDiscord className="h-5 w-5 text-muted-foreground/50" />
-                </div>
-              )}
-              <div className="absolute -bottom-0.5 -right-0.5 z-10 bg-background p-0.5">
-                <span className={cn('h-2.5 w-2.5 block', statusColor)} />
+      {/* Main Content Area */}
+      <div className="flex flex-col flex-1 p-5 min-h-0">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="relative flex-shrink-0">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Avatar"
+                className={cn(
+                  "h-14 w-14 rounded-full bg-muted object-cover ring-2 ring-transparent transition-all",
+                  isOffline ? "grayscale" : "group-hover:ring-[#5865F2]/20 shadow-md"
+                )}
+              />
+            ) : (
+              <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center">
+                <FaDiscord className="h-7 w-7 text-muted-foreground/50" />
               </div>
+            )}
+            <div className="absolute bottom-0 right-0 z-10 bg-background rounded-full p-1 shadow-sm">
+              <span className={cn('h-3 w-3 block rounded-full', statusColor)} />
             </div>
-            
-            <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-foreground text-sm leading-none mb-1 truncate">
-                {discord_user?.global_name || discord_user?.username || 'User'}
-              </h3>
-              <div className="flex items-center gap-1.5">
-                 <span className="text-xs text-muted-foreground font-mono truncate">@{discord_user?.username}</span>
-              </div>
-              {badges.length > 0 && (
-                   <div className="flex gap-0.5 mt-1">
-                     {badges.slice(0, 4).map((badge, i) => (
-                       <span key={i} className="text-[10px]" title={badge.label}>{badge.icon}</span>
+          </div>
+          
+          <div className="min-w-0 flex-1">
+            <h3 className="font-bold text-foreground text-lg leading-tight truncate">
+              {discord_user?.global_name || discord_user?.username || 'User'}
+            </h3>
+            <div className="flex items-center gap-2 mt-0.5">
+               <span className="text-sm text-muted-foreground font-mono truncate">@{discord_user?.username}</span>
+               {badges.length > 0 && (
+                 <div className="flex gap-1 items-center">
+                   <span className="text-muted-foreground/30 text-xs">|</span>
+                   <div className="flex gap-0.5">
+                     {badges.map((badge, i) => (
+                       <span key={i} className="text-xs scale-110" title={badge.label}>{badge.icon}</span>
                      ))}
                    </div>
-                 )}
+                 </div>
+               )}
             </div>
           </div>
         </div>
 
-        {/* Right Column: Activities */}
-        <div className="flex-1 overflow-y-auto p-2 sm:p-3 scrollbar-thin scrollbar-thumb-border/20 scrollbar-track-transparent">
+        {/* Dynamic Activity Section */}
+        <div className="flex-1 min-h-0">
           {displayActivities.length > 0 ? (
-            <div className="space-y-2 h-full flex flex-col justify-center">
-              {displayActivities.slice(0, 1).map((activity, index) => (
-                <ActivityCard 
-                  key={index} 
-                  activity={activity} 
-                  elapsed={elapsedTimes[index]}
-                />
-              ))}
-              {displayActivities.length > 1 && (
-                  <p className="text-[10px] text-muted-foreground text-center">+ {displayActivities.length - 1} more</p>
-              )}
+            <div className="mt-2">
+              {displayActivities.slice(0, 1).map((activity, index) => {
+                const artwork = getActivityArtwork(activity);
+                const isSpotify = activity.name === 'Spotify';
+                const isStreaming = activity.type === 1;
+                const displayImage = artwork.large || 
+                  (activity.application_id ? `https://cdn.discordapp.com/app-icons/${activity.application_id}/${activity.application_id}.png?size=256` : null);
+                const elapsed = elapsedTimes[index];
+
+                return (
+                  <div key={index} className="flex gap-4 items-center bg-muted/30 rounded-xl p-3 border border-border/10">
+                    <div className="relative flex-shrink-0">
+                      {displayImage ? (
+                        <div className="relative">
+                          <img 
+                            src={displayImage} 
+                            alt={artwork.largeText || activity.name}
+                            className="w-12 h-12 rounded-lg object-cover border border-border/20 shadow-sm"
+                            title={artwork.largeText}
+                          />
+                          {artwork.small && (
+                            <img 
+                              src={artwork.small}
+                              alt={artwork.smallText || ''}
+                              className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-background object-cover shadow-sm"
+                              title={artwork.smallText}
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 bg-muted/50 rounded-lg flex items-center justify-center border border-border/10">
+                          <Activity className="h-6 w-6 text-muted-foreground/30" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 leading-none mb-1">
+                        <p className="font-bold text-foreground text-sm truncate">{activity.name}</p>
+                        {isSpotify && <FaSpotify className="h-3 w-3 text-green-500/80" />}
+                        {isStreaming && <FaTwitch className="h-3 w-3 text-purple-500/80" />}
+                      </div>
+                      
+                      {(activity.details || activity.state) && (
+                        <div className="space-y-0.5 leading-tight">
+                          {activity.details && <p className="text-xs text-muted-foreground truncate italic">{activity.details}</p>}
+                          {activity.state && <p className="text-xs text-muted-foreground/70 truncate">{activity.state}</p>}
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-3 mt-1.5 text-[9px] text-muted-foreground/50 font-mono uppercase tracking-widest">
+                         <span className={cn('flex items-center gap-1', isStreaming ? 'text-purple-400' : 'text-green-500/80')}>
+                            {ACTIVITY_TYPES[activity.type] || 'PLAYING'}
+                         </span>
+                         {elapsed && (
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-2.5 w-2.5" />
+                            {elapsed}
+                          </span>
+                         )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-center p-2 border border-dashed border-border/30 opacity-60">
-               <Activity className="h-4 w-4 mb-1 text-muted-foreground" />
-               <p className="text-[10px] text-muted-foreground">No active game</p>
+            /* More elegant empty state when no game is active */
+            <div className="h-full flex flex-col justify-end pb-2">
+               {(customStatus || customEmoji) ? (
+                 <div className="flex items-center gap-2 p-3 bg-muted/20 border border-border/10 rounded-xl">
+                   <div className="flex-shrink-0">{getEmojiDisplay() || <Activity className="h-4 w-4 text-muted-foreground/30" />}</div>
+                   <p className="text-sm text-muted-foreground/90 font-medium italic truncate">
+                     {customStatus || "Hanging out"}
+                   </p>
+                 </div>
+               ) : (
+                 <div className="flex items-center gap-2 text-muted-foreground/40 text-sm font-medium italic translate-x-1">
+                   <div className="w-1 h-1 rounded-full bg-current opacity-50" />
+                   Currently chilling
+                 </div>
+               )}
             </div>
           )}
         </div>
       </div>
-
-      {/* Custom Status - Full Width Bottom */}
-      {(customStatus || customEmoji) && (
-        <div className="border-t border-border/30 px-4 py-2 text-xs text-muted-foreground/80 font-medium flex items-center gap-1.5 bg-muted/20">
-          {getEmojiDisplay()}
-          {customStatus && <span className="truncate">{customStatus}</span>}
-        </div>
-      )}
     </a>
   );
 }
