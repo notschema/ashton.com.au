@@ -11,8 +11,8 @@ const BUGS_2026 = {
     critical: 0,
     high: 2,
     medium: 0,
-    low: 0,
-    info: 0,
+    low: 1,
+    info: 1,
 };
 
 const HACKERONE_USERNAME = 'AshtonSec';
