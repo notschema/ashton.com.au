@@ -54,7 +54,7 @@ Want to use this for your own site?
 1.  **Clone the repo**
 
     ```bash
-    git clone https://github.com/notschema/ashton.com.au.git
+    git clone https://github.com/AshtonAU/ashton.com.au.git
     cd ashton.com.au
     ```
 
@@ -82,7 +82,7 @@ Want to use this for your own site?
 If you use this codebase for your portfolio:
 
 1.  Please keep the **LICENSE** file.
-2.  A link back to [ashton.com.au](https://ashton.com.au) or [github.com/notschema](https://github.com/notschema) in your footer or README is appreciated!
+2.  A link back to [ashton.com.au](https://ashton.com.au) or [github.com/AshtonAU](https://github.com/AshtonAU) in your footer or README is appreciated!
 
 ## 📄 License
 

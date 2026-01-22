@@ -10,7 +10,7 @@ import { MoveUpRight, GitFork, Star, GitCommit, Code } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 // Configuration
-const GITHUB_USERNAME = 'notschema';
+const GITHUB_USERNAME = 'AshtonAU';
 const PROFILE_URL = `https://github.com/${GITHUB_USERNAME}`;
 
 // Skeleton loader

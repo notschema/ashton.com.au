@@ -4,7 +4,7 @@ avatar: /images/avatar.png
 bio: Systems Engineer & Whitehat Pentester. Building secure, scalable infrastructure.
 pronouns: he/him
 website: https://ashton.com.au
-github: https://github.com/notschema
+github: https://github.com/AshtonAU
 linkedin: https://linkedin.com/in/ashton
 mail: hello@ashton.com.au
 ---

@@ -8,7 +8,7 @@ import type { APIRoute } from 'astro';
 // Force server-side rendering for this API route
 export const prerender = false;
 
-const GITHUB_USERNAME = 'notschema';
+const GITHUB_USERNAME = 'AshtonAU';
 
 // GraphQL query for contribution calendar
 const CONTRIBUTIONS_QUERY = `

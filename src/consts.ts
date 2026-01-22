@@ -12,7 +12,7 @@ export const SITE = {
 };
 
 export const SOCIAL_LINKS = {
-    github: 'https://github.com/notschema',
+    github: 'https://github.com/AshtonAU',
     linkedin: 'https://linkedin.com/in/ashtonau',
     discord: 'https://discord.com/users/169372933913968649',
     x: 'https://x.com/AshtonAU',
