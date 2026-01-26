@@ -21,9 +21,9 @@ export default function FeatureCard({ children, className, delay = 0, ...props }
     <div
       className={cn(
         'group relative overflow-hidden h-full border border-border/50 bg-background/50 transition-all duration-300',
-        'hover:border-foreground/20',
+        'hover:border-foreground/20 cursor-pointer',
         className
-      )} 
+      )}
       {...props}
     >
       {/* Noise Texture Background */}
@@ -57,7 +57,7 @@ export default function FeatureCard({ children, className, delay = 0, ...props }
       initial={{ filter: 'blur(4px)', translateY: -8, opacity: 0 }}
       whileInView={{ filter: 'blur(0px)', translateY: 0, opacity: 1 }}
       viewport={{ once: true }}
-      transition={{ delay, duration: 0.8 }}
+      transition={{ delay, duration: 0.3 }}
       className="h-full"
     >
       {content}

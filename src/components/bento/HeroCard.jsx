@@ -19,13 +19,13 @@ const BIO_SNIPPETS = [
 
 // Get contextual message based on hour
 function getTimeContext(hour) {
-    if (hour >= 0 && hour < 6) return "night owl mode 🦉";
-    if (hour >= 6 && hour < 9) return "caffeinating ☕";
-    if (hour >= 9 && hour < 12) return "in the zone 💀";
-    if (hour >= 12 && hour < 14) return "touching grass 🌱";
-    if (hour >= 14 && hour < 17) return "breaking things 🔥";
-    if (hour >= 17 && hour < 21) return "off the clock ✌️";
-    return "probably hacking something 👾";
+    if (hour >= 0 && hour < 6) return "night owl mode";
+    if (hour >= 6 && hour < 9) return "caffeinating";
+    if (hour >= 9 && hour < 12) return "in the zone";
+    if (hour >= 12 && hour < 14) return "touching grass";
+    if (hour >= 14 && hour < 17) return "breaking things";
+    if (hour >= 17 && hour < 21) return "off the clock";
+    return "probably hacking something";
 }
 
 export default function HeroCard() {
@@ -81,7 +81,7 @@ export default function HeroCard() {
                 </div>
 
                 {/* Location + Time */}
-                <div className="mt-auto pt-4 border-t border-border">
+                <div className="mt-auto pt-4 border-t border-border space-y-3">
                     <div className="flex items-center gap-2 text-sm">
                         <MapPin className="h-4 w-4 text-muted-foreground" />
                         <span className="text-muted-foreground">sydney</span>
@@ -90,9 +90,17 @@ export default function HeroCard() {
                             <span className="text-primary font-medium">{timeDisplay}</span> local
                         </span>
                     </div>
-                    <p className="text-xs text-muted-foreground/70 mt-1 ml-6">
+                    <p className="text-xs text-muted-foreground/70 ml-6">
                         {context}
                     </p>
+
+                    {/* Contact CTA */}
+                    <a
+                        href="mailto:hello@ashton.com.au"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium"
+                    >
+                        Get in touch
+                    </a>
                 </div>
             </div>
         </div>

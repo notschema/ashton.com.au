@@ -65,10 +65,10 @@ function getReadingTime(content: string): string {
                     <span class="sr-only">Read {post.data.title}</span>
                   </a>
 
-                  <div class="flex gap-6 py-6">
+                  <div class="flex gap-4 sm:gap-6 py-6 px-4 sm:px-6">
                     {/* Left: Square Image with Series Icon */}
                     {post.data.cover && (
-                      <div class="relative w-40 h-40 flex-shrink-0 overflow-hidden">
+                      <div class="relative w-20 h-20 sm:w-40 sm:h-40 flex-shrink-0 overflow-hidden">
                         <Image
                           src={post.data.cover}
                           alt={post.data.title}
@@ -114,10 +114,11 @@ function getReadingTime(content: string): string {
                             href={`/authors/${post.data.authors[0]}`}
                             class="relative z-20 flex items-center gap-1.5 hover:text-primary transition-colors"
                           >
-                            <div class="w-4 h-4 rounded-full bg-muted flex items-center justify-center">
-                              <span class="text-[8px] text-muted-foreground">
-                                👤
-                              </span>
+                            <div class="w-4 h-4 bg-muted flex items-center justify-center">
+                              <svg class="w-2.5 h-2.5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                              </svg>
                             </div>
                             <span>{post.data.authors[0]}</span>
                           </a>

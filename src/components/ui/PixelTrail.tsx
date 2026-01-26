@@ -17,9 +17,23 @@ const FADE_SPEED = 0.04;
 export default function PixelTrail() {
   const [pixels, setPixels] = useState<Pixel[]>([]);
   const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
+  const [shouldRender, setShouldRender] = useState(true);
   const pixelIdRef = useRef(0);
   const lastPositionRef = useRef({ x: 0, y: 0 });
   const animationRef = useRef<number>();
+
+  // Check for reduced motion preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setShouldRender(!mediaQuery.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setShouldRender(!e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   const createPixel = useCallback((x: number, y: number) => {
     return {
@@ -77,6 +91,11 @@ export default function PixelTrail() {
       }
     };
   }, []);
+
+  // Don't render if user prefers reduced motion
+  if (!shouldRender) {
+    return null;
+  }
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[9999] h-screen w-screen overflow-hidden">
