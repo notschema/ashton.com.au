@@ -13,28 +13,28 @@
 
 import { useState, useEffect } from 'react';
 import { FaDiscord, FaSpotify, FaTwitch } from 'react-icons/fa';
-import { Clock, Activity } from 'lucide-react';
+import { Clock, Activity, Shield, Users, Zap, Bug, Settings, Star, Wrench } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 // Configuration
 const DISCORD_ID = '169372933913968649';
 const LANYARD_API = 'https://api.lanyard.rest/v1/users';
 
-// Badge mappings
+// Badge mappings - Using Lucide icons instead of emojis for consistency
 const DISCORD_BADGES = {
-  staff: { icon: '🛡️', label: 'Discord Staff', color: 'text-blue-400' },
-  partner: { icon: '🤝', label: 'Partnered Server Owner', color: 'text-purple-400' },
-  hypesquad: { icon: '⚡', label: 'HypeSquad Events', color: 'text-orange-400' },
-  hypesquad_online_house_1: { icon: '💜', label: 'HypeSquad Bravery', color: 'text-purple-500' },
-  hypesquad_online_house_2: { icon: '🧡', label: 'HypeSquad Brilliance', color: 'text-orange-500' },
-  hypesquad_online_house_3: { icon: '💚', label: 'HypeSquad Balance', color: 'text-green-500' },
-  bug_hunter_level_1: { icon: '🐛', label: 'Bug Hunter', color: 'text-green-400' },
-  bug_hunter_level_2: { icon: '🐛', label: 'Bug Hunter Gold', color: 'text-yellow-400' },
-  verified_developer: { icon: '⚙️', label: 'Early Verified Bot Developer', color: 'text-blue-400' },
-  early_supporter: { icon: '⭐', label: 'Early Supporter', color: 'text-pink-400' },
-  premium: { icon: '💎', label: 'Nitro Subscriber', color: 'text-pink-500' },
-  premium_early_supporter: { icon: '✨', label: 'Nitro Early Supporter', color: 'text-indigo-400' },
-  active_developer: { icon: '🔧', label: 'Active Developer', color: 'text-green-400' },
+  staff: { icon: Shield, label: 'Discord Staff', color: 'text-blue-400' },
+  partner: { icon: Users, label: 'Partnered Server Owner', color: 'text-purple-400' },
+  hypesquad: { icon: Zap, label: 'HypeSquad Events', color: 'text-orange-400' },
+  hypesquad_online_house_1: { icon: Zap, label: 'HypeSquad Bravery', color: 'text-purple-500' },
+  hypesquad_online_house_2: { icon: Zap, label: 'HypeSquad Brilliance', color: 'text-orange-500' },
+  hypesquad_online_house_3: { icon: Zap, label: 'HypeSquad Balance', color: 'text-green-500' },
+  bug_hunter_level_1: { icon: Bug, label: 'Bug Hunter', color: 'text-green-400' },
+  bug_hunter_level_2: { icon: Bug, label: 'Bug Hunter Gold', color: 'text-yellow-400' },
+  verified_developer: { icon: Settings, label: 'Early Verified Bot Developer', color: 'text-blue-400' },
+  early_supporter: { icon: Star, label: 'Early Supporter', color: 'text-pink-400' },
+  premium: { icon: Zap, label: 'Nitro Subscriber', color: 'text-pink-500' },
+  premium_early_supporter: { icon: Star, label: 'Nitro Early Supporter', color: 'text-indigo-400' },
+  active_developer: { icon: Wrench, label: 'Active Developer', color: 'text-green-400' },
 };
 
 // Activity types
@@ -72,10 +72,7 @@ function formatTime(startMs, endMs = null) {
 
 // Get artwork
 function getActivityArtwork(activity) {
-  console.log('Discord Activity:', activity);
-  
   if (!activity?.assets) {
-    console.log('No assets for:', activity.name);
     return { large: null, small: null };
   }
   
@@ -202,7 +199,6 @@ export default function DiscordPresence() {
         const res = await fetch(`${LANYARD_API}/${DISCORD_ID}`);
         const json = await res.json();
         if (mounted && json.success) {
-          console.log('Full Lanyard Response:', json.data);
           setPresence(json.data);
         }
       } catch (e) {
@@ -281,9 +277,9 @@ export default function DiscordPresence() {
 
   // Hardcoded badges for display (API doesn't reliably return these)
   const badges = [
-    DISCORD_BADGES.active_developer,          // 🔧 Active Developer
-    DISCORD_BADGES.early_supporter,           // ⭐ Early Supporter
-    DISCORD_BADGES.premium,                   // 💎 Nitro
+    DISCORD_BADGES.active_developer,          // Active Developer
+    DISCORD_BADGES.early_supporter,           // Early Supporter
+    DISCORD_BADGES.premium,                   // Nitro
   ];
 
   const getEmojiDisplay = () => {
@@ -303,12 +299,14 @@ export default function DiscordPresence() {
   const DISCORD_PROFILE_URL = 'https://discord.com/users/169372933913968649';
 
   return (
-    <a 
+    <a
       href={DISCORD_PROFILE_URL}
       target="_blank"
       rel="noopener noreferrer"
+      aria-label={`View ${discord_user?.global_name || discord_user?.username}'s Discord profile - ${discord_status === 'offline' ? 'Offline' : 'Online'}`}
       className={cn(
         "group relative h-full flex flex-col overflow-hidden bg-transparent transition-all duration-300 block cursor-pointer",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         isOffline && "opacity-80 hover:opacity-100"
       )}
     >
@@ -329,6 +327,8 @@ export default function DiscordPresence() {
               <img
                 src={avatarUrl}
                 alt="Avatar"
+                width={56}
+                height={56}
                 className={cn(
                   "h-14 w-14 rounded-full bg-muted object-cover ring-2 ring-transparent transition-all",
                   isOffline ? "grayscale" : "group-hover:ring-[#5865F2]/20 shadow-md"
@@ -354,9 +354,17 @@ export default function DiscordPresence() {
                  <div className="flex gap-1 items-center">
                    <span className="text-muted-foreground/30 text-xs">|</span>
                    <div className="flex gap-0.5">
-                     {badges.map((badge, i) => (
-                       <span key={i} className="text-xs scale-110 grayscale opacity-60" title={badge.label}>{badge.icon}</span>
-                     ))}
+                     {badges.map((badge, i) => {
+                       const IconComponent = badge.icon;
+                       return (
+                         <IconComponent
+                           key={i}
+                           className="h-3 w-3 text-muted-foreground/60"
+                           title={badge.label}
+                           aria-label={badge.label}
+                         />
+                       );
+                     })}
                    </div>
                  </div>
                )}
@@ -381,16 +389,20 @@ export default function DiscordPresence() {
                     <div className="relative flex-shrink-0">
                       {displayImage ? (
                         <div className="relative">
-                          <img 
-                            src={displayImage} 
+                          <img
+                            src={displayImage}
                             alt={artwork.largeText || activity.name}
+                            width={48}
+                            height={48}
                             className="w-12 h-12 rounded-lg object-cover border border-border/20 shadow-sm"
                             title={artwork.largeText}
                           />
                           {artwork.small && (
-                            <img 
+                            <img
                               src={artwork.small}
                               alt={artwork.smallText || ''}
+                              width={20}
+                              height={20}
                               className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-background object-cover shadow-sm"
                               title={artwork.smallText}
                             />

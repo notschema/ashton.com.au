@@ -150,12 +150,14 @@ export default function SpotifyPresence() {
   const spotifySearchUrl = `https://open.spotify.com/search/${encodeURIComponent(`${name} ${artist?.['#text'] || ''}`)}`;
 
   return (
-    <a 
+    <a
       href={spotifySearchUrl}
       target="_blank"
       rel="noopener noreferrer"
+      aria-label={`${isNowPlaying ? 'Currently listening to' : 'Last played'}: ${name} by ${artist?.['#text'] || 'Unknown Artist'} - Open in Spotify`}
       className={cn(
         "group relative h-full overflow-hidden bg-transparent transition-all duration-500 block cursor-pointer",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         !isNowPlaying && "grayscale opacity-60 hover:grayscale-0 hover:opacity-100"
       )}
     >

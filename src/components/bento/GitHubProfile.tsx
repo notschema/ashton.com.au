@@ -81,9 +81,6 @@ export default function GitHubProfile() {
                     throw new Error(data.error);
                 }
 
-                console.log(`GitHub data fetched (authenticated: ${data.authenticated})`);
-                console.log(`Commits in ${new Date().getFullYear()}:`, data.commitsThisYear);
-
                 const finalCommits = data.commits.length > 0 ? data.commits : [
                     { message: 'feat: add retro TV component with CRT effects', repo: 'ashton.com.au', timestamp: new Date().toISOString() },
                     { message: 'refactor: enhance Discord presence card', repo: 'ashton.com.au', timestamp: new Date(Date.now() - 86400000).toISOString() },
@@ -130,11 +127,12 @@ export default function GitHubProfile() {
     }
 
     return (
-        <a 
+        <a
             href={PROFILE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative h-full flex flex-col overflow-hidden bg-transparent hover:bg-muted/10 transition-colors"
+            aria-label={`View @${GITHUB_USERNAME}'s GitHub profile - ${commitsThisYear} commits in ${new Date().getFullYear()}`}
+            className="group relative h-full flex flex-col overflow-hidden bg-transparent hover:bg-muted/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
             {/* Background Gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-transparent via-primary/[0.03] to-transparent opacity-50" />
@@ -147,6 +145,8 @@ export default function GitHubProfile() {
                             <img
                                 src={profile.avatar_url}
                                 alt={GITHUB_USERNAME}
+                                width={40}
+                                height={40}
                                 className="h-10 w-10 rounded-full border border-border/50 shadow-sm"
                             />
                         ) : (
@@ -169,7 +169,7 @@ export default function GitHubProfile() {
                                 {commitsThisYear}
                             </span>
                             <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                                Commits in 2026
+                                Commits in {new Date().getFullYear()}
                             </span>
                         </div>
                     </div>

@@ -43,7 +43,8 @@ export default function BugBountyCard() {
             href={PROFILE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative h-full flex flex-col overflow-hidden bg-transparent transition-all duration-300"
+            aria-label={`View bug bounty profile on HackerOne - ${totalBugs} total findings in 2026`}
+            className="group relative h-full flex flex-col overflow-hidden bg-transparent transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >

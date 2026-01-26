@@ -139,8 +139,10 @@ function getRandomTopic(): string {
 // Get your API key at: https://developers.giphy.com/dashboard/
 const GIPHY_API_KEY = import.meta.env.PUBLIC_GIPHY_API_KEY || '';
 const GIPHY_LIMIT = 10; // Fetch 10 GIFs to cycle through
-const CHANNEL_DURATION = 20000; // 20 seconds per channel
-const STATIC_DURATION = 500;
+const CHANNEL_DURATION_NORMAL = 20000; // 20 seconds per channel
+const CHANNEL_DURATION_REDUCED = 30000; // 30 seconds with reduced motion
+const STATIC_DURATION_NORMAL = 500;
+const STATIC_DURATION_REDUCED = 100;
 
 export default function RetroTV() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -149,7 +151,21 @@ export default function RetroTV() {
   const [showControls, setShowControls] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentTopic, setCurrentTopic] = useState('');
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout>();
+
+  // Check for reduced motion preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   // Fetch GIFs from Giphy with random nostalgic topic and smart caching
   useEffect(() => {
@@ -184,7 +200,6 @@ export default function RetroTV() {
 
       // Check for cached data for THIS specific topic
       if (cache.topics[randomTopic]) {
-        console.log(`📺 Using cached GIFs for: "${randomTopic}"`);
         setChannels(cache.topics[randomTopic]);
         setLoading(false);
         return;
@@ -192,14 +207,12 @@ export default function RetroTV() {
 
       // Fetch fresh data from Giphy
       try {
-        console.log(`📺 Fetching GIFs for: "${randomTopic}"`);
         const response = await fetch(
           `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(randomTopic)}&limit=${GIPHY_LIMIT}&rating=g`
         );
-        
+
         if (response.status === 401) {
-            console.error('❌ Giphy API Key Invalid/Missing. Check .env file.');
-            throw new Error('401 Unauthorized');
+            throw new Error('401 Unauthorized - Check GIPHY API key');
         }
 
         const data = await response.json();
@@ -214,9 +227,8 @@ export default function RetroTV() {
           // Update cache with new topic data
           cache.topics[randomTopic] = fetchedChannels;
           localStorage.setItem('retrotv_v2_cache', JSON.stringify(cache));
-          
+
           setChannels(fetchedChannels);
-          console.log(`✅ Loaded ${fetchedChannels.length} GIFs: "${randomTopic}"`);
         } else {
           // Fallback
           setFallbackChannels();
@@ -235,7 +247,6 @@ export default function RetroTV() {
         { id: 2, name: 'MOON', url: 'https://media.giphy.com/media/3o7TKkkGvFJ3qH4Q9u/giphy.gif' },
         { id: 3, name: 'AKIRA', url: 'https://media.giphy.com/media/12b3E4U9aSndxC/giphy.gif' },
       ]);
-      console.warn('Using fallback channels');
     }
 
     fetchGiphyContent();
@@ -247,22 +258,25 @@ export default function RetroTV() {
   useEffect(() => {
     if (channels.length === 0 || loading) return;
 
+    const duration = prefersReducedMotion ? CHANNEL_DURATION_REDUCED : CHANNEL_DURATION_NORMAL;
+
     intervalRef.current = setInterval(() => {
       changeChannel((channelIndex + 1) % channels.length);
-    }, CHANNEL_DURATION);
+    }, duration);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [channelIndex, channels, loading]);
+  }, [channelIndex, channels, loading, prefersReducedMotion]);
 
   const changeChannel = (newIndex: number) => {
+    const staticDuration = prefersReducedMotion ? STATIC_DURATION_REDUCED : STATIC_DURATION_NORMAL;
     setIsStatic(true);
-    
+
     setTimeout(() => {
       setChannelIndex(newIndex);
       setIsStatic(false);
-    }, STATIC_DURATION);
+    }, staticDuration);
   };
 
   const handlePrevChannel = (e: React.MouseEvent) => {
@@ -339,14 +353,14 @@ export default function RetroTV() {
         >
           <button
             onClick={handlePrevChannel}
-            className="px-4 py-2 rounded-lg bg-zinc-900/70 backdrop-blur border border-white/10 text-zinc-400 hover:text-white hover:border-white/20 transition-all font-mono text-sm"
+            className="px-4 py-2 bg-zinc-900/70 backdrop-blur border border-white/10 text-zinc-400 hover:text-white hover:border-white/20 transition-all font-mono text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="Previous Channel"
           >
             CH▼
           </button>
           <button
             onClick={handleNextChannel}
-            className="px-4 py-2 rounded-lg bg-zinc-900/70 backdrop-blur border border-white/10 text-zinc-400 hover:text-white hover:border-white/20 transition-all font-mono text-sm"
+            className="px-4 py-2 bg-zinc-900/70 backdrop-blur border border-white/10 text-zinc-400 hover:text-white hover:border-white/20 transition-all font-mono text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="Next Channel"
           >
             CH▲
