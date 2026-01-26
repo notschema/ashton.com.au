@@ -97,7 +97,7 @@ export default function HeroCard() {
                     {/* Contact CTA */}
                     <a
                         href="mailto:hello@ashton.com.au"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium"
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-border text-foreground hover:border-foreground/50 hover:bg-background/50 transition-colors text-sm font-medium"
                     >
                         Get in touch
                     </a>
